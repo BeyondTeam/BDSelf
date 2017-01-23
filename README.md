@@ -55,7 +55,7 @@ Then restart the bot.
 More information [Beyond Development](https://telegram.me/joinchat/AAAAAD9JFZlMveUl8q99gA)
 
 # Special thanks to
-[@MrPars](httpa://telegram.me/MrPars)
+[@MrPars](https://telegram.me/MrPars)
 
 [@MrHalix](https://github.com/MrHalix)
 
