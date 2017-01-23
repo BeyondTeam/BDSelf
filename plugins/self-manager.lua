@@ -92,7 +92,56 @@ local hash = 'autoleave'
          end
       end
    end
-end
+	
+if matches[1] == 'help' and is_sudo(msg) then
+
+text = [[
+*Commands:*
+
+*!help*
+_Send Help In Your Pv_
+
+*!settings*
+_Send Self Bot Settings_
+
+*!gpid*
+_Show Group Id_
+
+*!tosuper*
+_Change Chat To Channel_
+
+*!chatlist*
+_Show Name List_
+
+*!chat + name answer*
+_Set Chat Name And Answer_
+
+*!chat - name*
+_Disabeled Chatting in Group
+
+*!chat clean*
+_Clean Name And Answers_
+
+*!delmyusername*
+_Delete Username_
+
+*!delmyname*
+_Delete name_
+
+*!markread* `[on | off]`
+_Change Markread Status_
+
+*!typing* `[on | off]`
+_Change Typing Status_
+
+*!autoleave `[on | off]`
+_Set Auto Leave Status_
+
+*!self `[on | off]`
+_Set Self Bot Status In Group_
+
+*!pin* `(reply)`
+_Pin Your Message In Group_
 
 if matches[1] == 'help' and is_sudo(msg) then
 
@@ -196,9 +245,9 @@ _UnBlock User_
 
 *Good Luck ;)*]]
 
-tdcli.sendMessage(msg.sender_user_id_, '', 0, text, 0, 'md')
-            return "_Help was send in your private message_"
-
+tdcli.sendMessage(msg.sender_user_id_, 0, text, 0, 'md')
+            return '_Help was send in your private message_'
+end
 end
 
 return {
