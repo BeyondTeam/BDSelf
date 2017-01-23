@@ -551,10 +551,6 @@ function tdcli_update_callback (data)
   tdcli.viewMessages(msg.chat_id_, {[0] = msg.id_}, dl_cb, nil)
     end
 
-    if redis:get('type') == 'on' then
-  tdcli.sendChatAction(msg.chat_id_, 'Typing')
-    end
-
     if ((not d) and chat) then
 
       if msg.content_.ID == "MessageText" then
