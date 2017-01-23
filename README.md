@@ -35,7 +35,6 @@ cd $HOME && git clone https://github.com/BeyondTeam/Self-BotV2.git && cd Self-Bo
 * * *
 
 ### Sudo And Bot
-After you run the bot for first time, send it `!id`. Get your ID and stop the bot.
 
 Open ./bot/bot.lua and add your ID to the "sudo_users" section in the following format:
 ```
@@ -45,10 +44,8 @@ Open ./bot/bot.lua and add your ID to the "sudo_users" section in the following 
     YourID
   }
 ```
-add your bot ID at line 4 in bot.lua
-add your ID in config.lua
-add your ID at line 362 in tools.lua
-Then restart the bot.
+add your ID at line 4 and 86 in bot.lua
+Then restart or reload.
 
 # Support and development
 
