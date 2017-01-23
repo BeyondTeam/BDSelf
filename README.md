@@ -1,6 +1,6 @@
 # [Self-Bot](https://telegram.me/BeyondTeam)
 
-An advanced and powerful administration bot based on NEW TG-CLI
+Professional Self-Bot Based On NEW TG-CLI
 
 
 * * *
