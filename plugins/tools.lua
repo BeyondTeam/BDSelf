@@ -157,19 +157,6 @@ tdcli.unblockUser(id)
 return '_User_ *['..matches[2]..']* _Has Been Blocked_'
 end
 
-if matches[1] == 'typing' and is_sudo(msg) then
-if matches[2] == 'on' then
-type = 'typing'
-redis:set(type, 'true')
-return '_Typing >_ *ON*'
-end
-if matches[2] == 'off' then
-type = 'typing'
-redis:del(type)
-return '_Typing >_ *OFF*'
-end
-end
-
 if matches[1] == 'chatlist' and is_sudo(msg) then
     local output = list_chats(msg)
     return output
@@ -209,7 +196,6 @@ patterns = {
 "^[!/#](delcontact) (%d+)$",
 "^[!/#](block) (.*)$",
 "^[!/#](unblock) (.*)$",
-"^[!/#](typing) (.*)$",
 "^(.+)$",
 }, 
 run = run 
