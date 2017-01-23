@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
 
-cd $HOME/BDReborn
-
+cd $HOME/Self-BotV2
 install() {
 	    cd tg
 		sudo add-apt-repository ppa:ubuntu-toolchain-r/test
