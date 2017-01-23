@@ -1,6 +1,6 @@
-# [BDreborn](https://telegram.me/BDreborn)
+# [Self-Bot](https://telegram.me/BeyondTeam)
 
-**An advanced and powerful administration bot based on NEW TG-CLI
+An advanced and powerful administration bot based on NEW TG-CLI
 
 
 * * *
@@ -20,8 +20,8 @@
 ```sh
 # Let's install the bot.
 cd $HOME
-git clone https://github.com/BeyondTeam/BDReborn.git
-cd BDReborn
+git clone https://github.com/BeyondTeam/Self-BotV2.git
+cd Self-BotV2
 chmod +x beyond.sh
 ./beyond.sh install
 ./beyond.sh # Enter a phone number & confirmation code.
@@ -29,7 +29,7 @@ chmod +x beyond.sh
 ### One command
 To install everything in one command, use:
 ```sh
-cd $HOME && git clone https://github.com/BeyondTeam/BDReborn.git && cd BDReborn && chmod +x beyond.sh && ./beyond.sh install && ./beyond.sh
+cd $HOME && git clone https://github.com/BeyondTeam/Self-BotV2.git && cd Self-BotV2 && chmod +x beyond.sh && ./beyond.sh install && ./beyond.sh
 ```
 
 * * *
@@ -55,9 +55,7 @@ Then restart the bot.
 More information [Beyond Development](https://telegram.me/joinchat/AAAAAD9JFZlMveUl8q99gA)
 
 # Special thanks to
-[@nero_dev](https://telegram.me/nero_dev)
-
-[@K_a_I_i_I_i_n_u_x](https://telegram.me/K_a_I_i_I_i_n_u_x)
+[@MrPars](httpa://telegram.me/MrPars)
 
 [@MrHalix](https://github.com/MrHalix)
 
@@ -70,8 +68,6 @@ More information [Beyond Development](https://telegram.me/joinchat/AAAAAD9JFZlM
 [SoLiD](https://github.com/solid021) ([Telegram](https://telegram.me/SoLiD))
 
 [MAKAN](https://github.com/makanj) ([Telegram](https://telegram.me/MAKAN))
-
-[Rixel](https://github.com/Rixel) ([Telegram](https://telegram.me/Rixel))
 
 [Civey](https://github.com/Oysof) ([Telegram](https://telegram.me/Civey))
 
