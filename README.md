@@ -18,7 +18,7 @@ Professional Self-Bot Based On NEW TG-CLI
 # Installation
 
 ```sh
-# Let's install the bot.
+# Let's install the self-bot.
 cd $HOME
 git clone https://github.com/BeyondTeam/Self-BotV2.git
 cd Self-BotV2
