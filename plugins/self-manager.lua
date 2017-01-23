@@ -48,7 +48,7 @@ end
       	user_id_ = msg.adduser
     	}, check_invite, {chat_id=msg.chat_id_,msg_id=msg.id_})
 	end
-   if redis:get("mute_gp:"..msg.chat_id_) then
+   if redis:get("mute_gp:"..msg.chat_id_) and not is_sudo(msg) then
    del_msg(msg.chat_id_, msg.id_)
   end
 -----------------------
