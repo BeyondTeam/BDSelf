@@ -95,6 +95,7 @@ An fun bot based on BDReborn
 》Admins :
 》@SoLiD ➣ Founder & Developer《
 》@Makan ➣ Developer《
+》@Exacute ➣ Developer《
 》@CiveY ➣ Developeer《
 》@MrPars ➣ Manager《
 
