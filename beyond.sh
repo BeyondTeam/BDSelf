@@ -34,6 +34,6 @@ if [ ! -f ./tg/tgcli ]; then
    echo -e "     > BeyondTeam Source :D                        "
    echo -e "                                              \033[0;00m"
    echo -e "\e[36m"
-   ./tg/tgcli -s ./bot/bot.lua -l 1 -E $@
+   ./tg/tgcli -s ./bot/bot.lua -p beyond-self-bot # Profile of Beyond Self Bot (Need Relogin)
 fi
 		
