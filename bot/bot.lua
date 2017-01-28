@@ -69,6 +69,51 @@ function match_plugins(msg)
   end
 end
 
+function save_self( )
+  serialize_to_file(_self, './data/self.lua')
+  print ('saved self into ./data/self.lua')
+end
+
+function create_self( )
+  self = {
+    names = {
+    "solid",
+    "سلید",
+    "سولید",
+    "سعید",
+    "saeed",
+    "saeid"
+    },
+    answers = {
+    "وات؟ :/",
+    "بلی؟",
+    "بفرما",
+    "بوگوی :|",
+    "جونم؟",
+    "جونز",
+    "ژون؟ :/"
+    },
+}
+  serialize_to_file(self, './data/self.lua')
+  print('saved self into ./data/self.lua')
+end
+
+function load_self( )
+  local f = io.open('./data/self.lua', "r")
+  -- If self.lua doesn't exist
+  if not f then
+    print ("Created new self file: data/self.lua")
+    create_self()
+  else
+    f:close()
+  end
+  local self = loadfile ("./data/self.lua")()
+  for k, v in pairs(self.names) do
+    --print("self names : " ..v)
+  end
+  return self
+end
+
 function save_config( )
   serialize_to_file(_config, './data/config.lua')
   print ('saved config into ./data/config.lua')
@@ -95,7 +140,6 @@ An fun bot based on BDReborn
 》Admins :
 》@SoLiD ➣ Founder & Developer《
 》@Makan ➣ Developer《
-》@Exacute ➣ Developer《
 》@CiveY ➣ Developeer《
 》@MrPars ➣ Manager《
 
@@ -134,7 +178,7 @@ function load_config( )
 end
 plugins = {}
 _config = load_config()
-
+_self = load_self()
 function load_plugins()
   local config = loadfile ("./data/config.lua")()
       for k, v in pairs(config.enabled_plugins) do
@@ -185,6 +229,96 @@ function file_exists(name)
   end
 end
 
+-- Returns true if the string is empty
+function string:isempty()
+  return self == nil or self == ''
+end
+
+-- Returns true if the string is blank
+function string:isblank()
+  self = self:trim()
+  return self:isempty()
+end
+
+-- DEPRECATED!!!!!
+function string.starts(String, Start)
+  print("string.starts(String, Start) is DEPRECATED use string:starts(text) instead")
+  return Start == string.sub(String,1,string.len(Start))
+end
+
+-- Returns true if String starts with Start
+function string:starts(text)
+  return text == string.sub(self,1,string.len(text))
+end
+
+function get_http_file_name(url, headers)
+  -- Eg: foo.var
+  local file_name = url:match("[^%w]+([%.%w]+)$")
+  -- Any delimited alphanumeric on the url
+  file_name = file_name or url:match("[^%w]+(%w+)[^%w]+$")
+  -- Random name, hope content-type works
+  file_name = file_name or str:random(5)
+
+  local content_type = headers["content-type"]
+
+  local extension = nil
+  if content_type then
+    extension = mimetype.get_mime_extension(content_type)
+  end
+  if extension then
+    file_name = file_name.."."..extension
+  end
+
+  local disposition = headers["content-disposition"]
+  if disposition then
+    -- attachment; filename=CodeCogsEqn.png
+    file_name = disposition:match('filename=([^;]+)') or file_name
+  end
+
+  return file_name
+end
+
+--  Saves file to /tmp/. If file_name isn't provided,
+-- will get the text after the last "/" for filename
+-- and content-type for extension
+function download_to_file(url, file_name)
+  print("url to download: "..url)
+
+  local respbody = {}
+  local options = {
+    url = url,
+    sink = ltn12.sink.table(respbody),
+    redirect = true
+  }
+
+  -- nil, code, headers, status
+  local response = nil
+
+  if url:starts('https') then
+    options.redirect = false
+    response = {https.request(options)}
+  else
+    response = {http.request(options)}
+  end
+
+  local code = response[2]
+  local headers = response[3]
+  local status = response[4]
+
+  if code ~= 200 then return nil end
+
+  file_name = file_name or get_http_file_name(url, headers)
+
+  local file_path = "/tmp/"..file_name
+  print("Saved to: "..file_path)
+
+  file = io.open(file_path, "w+")
+  file:write(table.concat(respbody))
+  file:close()
+
+  return file_path
+end
+
 function gp_type(chat_id)
   local gp_type = "pv"
   local id = tostring(chat_id)
@@ -194,70 +328,6 @@ function gp_type(chat_id)
       gp_type = "chat"
   end
   return gp_type
-end
-
-function is_reply(msg)
-  local var = false
-    if msg.reply_to_message_id_ ~= 0 then -- reply message id is not 0
-      var = true
-    end
-  return var
-end
-
-function is_supergroup(msg)
-  chat_id = tostring(msg.chat_id_)
-  if chat_id:match('^-100') then --supergroups and channels start with -100
-    if not msg.is_post_ then
-    return true
-    end
-  else
-    return false
-  end
-end
-
-function is_channel(msg)
-  chat_id = tostring(msg.chat_id_)
-  if chat_id:match('^-100') then -- Start with -100 (like channels and supergroups)
-  if msg.is_post_ then -- message is a channel post
-    return true
-  else
-    return false
-  end
-  end
-end
-
-function is_group(msg)
-  chat_id = tostring(msg.chat_id_)
-  if chat_id:match('^-100') then --not start with -100 (normal groups does not have -100 in first)
-    return false
-  elseif chat_id:match('^-') then
-    return true
-  else
-    return false
-  end
-end
-
-function is_private(msg)
-  chat_id = tostring(msg.chat_id_)
-  if chat_id:match('^-') then --private chat does not start with -
-    return false
-  else
-    return true
-  end
-end
-
-function check_markdown(text) --markdown escape ( when you need to escape markdown , use it like : check_markdown('your text')
-		str = text
-		if str:match('_') then
-			output = str:gsub('_','\\_')
-		elseif str:match('*') then
-			output = str:gsub('*','\\*')
-		elseif str:match('`') then
-			output = str:gsub('`','\\`')
-		else
-			output = str
-		end
-	return output
 end
 
 function is_sudo(msg)
@@ -549,6 +619,8 @@ function msg_valid(msg)
     gpid = string.gsub(msg.chat_id_, "-100", "")
      elseif chat_id:match("-") then
     gpid = string.gsub(msg.chat_id_, "-", "")
+     else
+   gpid = msg.chat_id_
    end
 if msg.content_.text_ then
 local hash = 'on-off:'..gpid
@@ -602,6 +674,7 @@ function match_plugin(plugin, plugin_name, msg)
   end
 end
 _config = load_config()
+_self = load_self()
 load_plugins()
 function tdcli_update_callback (data)
   if (data.ID == "UpdateNewMessage") then
