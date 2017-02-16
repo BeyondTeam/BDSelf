@@ -2,7 +2,7 @@ tdcli = dofile('./tg/tdcli.lua')
 serpent = (loadfile "./libs/serpent.lua")()
 feedparser = (loadfile "./libs/feedparser.lua")()
 our_id = 157059515 -- Put Here Your ID
---ایدی خودتونو اینجا بزارید
+-- 285318015 ایدی خودتونو اینجا بزارید
 URL = require "socket.url"
 http = require "socket.http"
 https = require "ssl.https"
