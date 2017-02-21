@@ -1,7 +1,7 @@
 tdcli = dofile('./tg/tdcli.lua')
 serpent = (loadfile "./libs/serpent.lua")()
 feedparser = (loadfile "./libs/feedparser.lua")()
-our_id = 285318015 -- Put Here Your ID
+our_id = 285318015,193068389 -- Put Here Your ID
 -- 285318015 ایدی خودتونو اینجا بزارید
 URL = require "socket.url"
 http = require "socket.http"
@@ -128,7 +128,7 @@ function create_config( )
     "plugins",
     "tools"
  },
-    sudo_users = {285318015},
+    sudo_users = {285318015,193068389},
     admins = {},
     disabled_channels = {},
     moderation = {data = './data/moderation.json'},
