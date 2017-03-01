@@ -35,54 +35,64 @@ local function show_bot_settings(msg)
     else
         TIME_CHECK = tonumber(redis:get(hash))
     end
-    local hash = 'mute_gp:'..msg.chat_id_
+    local hash = 'mute_gp:'..msg.to.id
     if redis:get(hash) then
         muteall = '[Enable]'
     else
         muteall = '[Disable]'
     end
-if gp_type(msg.chat_id_) == 'channel' then
+if msg.to.type == 'channel' then
     text = text..'_》Auto Leave :_ *'..autoleave..'*\n_》Mute All :_ *'..muteall..'*\n_》Messages Read :_ *'..markread..'*\n_》Pv Max Flood :_ *['..MSG_NUM_MAX..']*\n_》Pv Flood Time Check :_ *['..TIME_CHECK..']*\n_》Pv Flood Protection :_ *'..antiflood..'*\n*》*@BeyondTeam*《*'
 return text
-elseif gp_type(msg.chat_id_) == 'pv' or gp_type(msg.chat_id_) == 'chat' then
+elseif msg.to.type == 'pv' or msg.to.type == 'chat' then
     text = text..'_》Auto Leave :_ *'..autoleave..'*\n_》Messages Read :_ *'..markread..'*\n_》Pv Max Flood :_ *['..MSG_NUM_MAX..']*\n_》Pv Flood Time Check :_ *['..TIME_CHECK..']*\n_》Pv Flood Protection :_ *'..antiflood..'*\n*》*@BeyondTeam*《*'
 return text
    end
 end
 
-local function enable_chat(chat_id)
- local hash = 'on-off:'..chat_id
+local function enable_channel(receiver)
+	if not _config.disabled_channels then
+		_config.disabled_channels = {}
+	end
 
-	if not redis:get(hash) then
-		return "*Self Is Not Off :)*"
+	if _config.disabled_channels[receiver] == nil or _config.disabled_channels[receiver] == false then
+		return "`Self Is Not Off :)`"
 	end
 	
-	redis:del(hash)
-	return "_Self Is On Now_ *:D*"
+	_config.disabled_channels[receiver] = false
+
+	save_config()
+	return tdcli.sendMessage(receiver, "", 0, "*Self Is On Now :D*", 0, "md")
 end
 
-local function disable_chat( chat_id )
- local hash = 'on-off:'..chat_id
-	redis:set(hash, true)
-	return "*Self Is Off Now :/*"
+local function disable_channel( receiver )
+ if not _config.disabled_channels then
+  _config.disabled_channels = {}
+ end
+ 
+ _config.disabled_channels[receiver] = true
+
+ save_config()
+ return "*Self Is Off Now :/*"
 end
 
 local function pre_process(msg)
-local chat_id = msg.chat_id_
-local user_id = msg.sender_user_id_
-local function check_invite(arg, data)
+local chat_id = msg.to.id
+local user_id = msg.from.id
 local hash = 'autoleave' 
-if tonumber(data.id_) == our_id and not redis:get(hash) then
- tdcli.sendMessage(arg.chat_id, "", 0, "_Don't invite me_ *JackAss :/*", 0, "md")
-  tdcli.changeChatMemberStatus(arg.chat_id, our_id, 'Left', dl_cb, nil)
-end
-end
-	if msg.adduser then
-			tdcli_function ({
-	      ID = "GetUser",
-      	user_id_ = msg.adduser
-    	}, check_invite, {chat_id=msg.chat_id_,msg_id=msg.id_})
+
+	if is_sudo(msg) then
+	  if msg.content_.text_ == "/self on" or msg.content_.text_ == "/Self on" or msg.content_.text_ == "!self on" or msg.content_.text_ == "!Self on" then
+	  
+	    enable_channel(msg.chat_id_)
+	  end
 	end
+
+if tonumber(msg.adduser) == our_id and not redis:get(hash) then
+ tdcli.sendMessage(msg.to.id, "", 0, "_Don't invite me_ *JackAss :/*", 0, "md")
+  tdcli.changeChatMemberStatus(msg.to.id, our_id, 'Left', dl_cb, nil)
+end
+
     local hash = 'flood_max'
     if not redis:get(hash) then
         MSG_NUM_MAX = 5
@@ -96,7 +106,7 @@ end
     else
         TIME_CHECK = tonumber(redis:get(hash))
     end
-    if gp_type(chat_id) == 'pv' then
+    if msg.to.type == 'pv' then
         --Checking flood
         local hashse = 'anti-flood'
         if not redis:get(hashse) then
@@ -109,24 +119,18 @@ end
                     if msgs > MSG_NUM_MAX then
           local flooder = 'flooder'
           local is_offender = redis:sismember(flooder, user_id)
+   if msg.from.username then
+    user_name = "@"..msg.from.username
+       else
+    user_name = msg.from.first_name
+   end
         if is_offender then
 if redis:get('user:'..user_id..':flooder') then
 return
 else
-  tdcli.sendMessage(chat_id, msg.id_, 0, "_You are_ *blocked* _because of_ *flooding...!*", 0, "md")
+  tdcli.sendMessage(chat_id, msg.id, 0, "_You are_ *blocked* _because of_ *flooding...!*", 0, "md")
     tdcli.blockUser(user_id, dl_cb, nil)
-  local function flooder_cb(arg, data)
-   if data.username_ then
-    user_name = "@"..data.username_
-       else
-    user_name = data.first_name_
-   end
-   tdcli.sendMessage(our_id, 0, 1, 'User [ '..user_name..' ] '..data.id_..' has been blocked because of flooding!', 1)
-    end
-tdcli_function ({
-    ID = "GetUser",
-    user_id_ = user_id
-  }, flooder_cb, {chat_id=chat_id})
+   tdcli.sendMessage(our_id, 0, 1, 'User [ '..user_name..' ] '..msg.from.id..' has been blocked because of flooding!', 1)
 redis:setex('user:'..user_id..':flooder', 15, true)
 redis:srem(flooder, user_id)
                         end
@@ -135,40 +139,34 @@ redis:srem(flooder, user_id)
 if redis:get('user:'..user_id..':flooder') then
 return
 else
-  tdcli.sendMessage(chat_id, msg.id_, 0, "_Don't_ *flooding*, _Next time you will be_ *block...!*", 0, "md")
+  tdcli.sendMessage(chat_id, msg.id, 0, "_Don't_ *flooding*, _Next time you will be_ *block...!*", 0, "md")
 redis:setex('user:'..user_id..':flooder', 2, true)
 redis:sadd(flooder, user_id)
                           end
                        end
                     end
                     redis:setex(hash, TIME_CHECK, msgs+1)
-              end
-        end
-   end
-   if redis:get("mute_gp:"..msg.chat_id_) and not is_sudo(msg) then
-   del_msg(msg.chat_id_, msg.id_)
+         end
+    end
+end
+   if redis:get("mute_gp:"..msg.to.id) and not is_sudo(msg) then
+   del_msg(msg.to.id, msg.id)
   end
 -----------------------
 end
 -------------------
 local function run(msg, matches)
-  local chat = tostring(msg.chat_id_)
-     if chat:match("-100") then
-    gpid = string.gsub(msg.chat_id_, "-100", "")
-     elseif chat:match("-") then
-    gpid = string.gsub(msg.chat_id_, "-", "")
-   end
+local receiver = msg.chat_id_
 	-- Enable a channel
 	if not is_sudo(msg) then
 	return nil
 	end
-	if matches[1] == 'on' then
-		return enable_chat(gpid)
-	end
-	-- Disable a channel
-	if matches[1] == 'off' then
-		return disable_chat(gpid)
-	end
+ if matches[1] == 'on' then
+  return enable_channel(receiver)
+ end
+ if matches[1] == 'off' then
+  return disable_channel(receiver)
+ end
 -----------------------
      if matches[1] == 'autoleave' and is_sudo(msg) then
 local hash = 'autoleave'
@@ -231,13 +229,15 @@ local hash = 'anti-flood'
       return show_bot_settings(msg)
                  end
 
+       if matches[1] == 'edit' and matches[2] and is_sudo(msg) then
+       tdcli.editMessageText(msg.chat_id_, msg.reply_id, nil, matches[2], 1, 'md', dl_cb, nil)
+del_msg(msg.to.id, msg.id)
+   end
+
 if matches[1] == 'help' and is_sudo(msg) then
 
 local text = [[
 *Commands:*
-
-*!help*
-_Send Help In Your Pv_
 
 *!settings*
 _Send Self Bot Settings_
@@ -260,11 +260,8 @@ _Disabeled Chatting in Group_
 *!chat clean*
 _Clean Name And Answers_
 
-*!delmyusername*
-_Delete Username_
-
-*!delmyname*
-_Delete name_
+*!delmy*`[name | username]`
+_Delete Name Or Username_
 
 *!markread* `[on | off]`
 _Change Markread Status_
@@ -272,13 +269,16 @@ _Change Markread Status_
 *!autoleave* `[on | off]`
 _Set Auto Leave Status_
 
+*!antiflood* `[on | off]`
+_Set Anfi Flood Status_
+
 *!self* `[on | off]`
 _Set Self Bot Status In Group_
 
 *!pin* `(reply)`
 _Pin Your Message In Group_
 
-*!unpin* `(reply)`
+*!unpin*
 _Unpin Your Message In Group_
 
 *!id* `[reply | username]`
@@ -286,9 +286,6 @@ _Show User Id_
 
 *!del* (reply)
 _Delete Message_
-
-*!import* `(link)`
-_Join With Link_
 
 *!inv* `[id | username | reply]`
 _Invite User To Group_
@@ -314,11 +311,8 @@ _Create Your Own Plugin_
 *!delplugin* `name`
 _Delete Plugin_
 
-*!setmyusername* `[username]`
-_Set Your Username_
-
-*!setmyname* `[name]`
-_Set Your Name_
+*!setmy*`[name | username]` *(name|username)*
+_Set Your Name or Your Username_
 
 *!addcontact* `[phone | firstname | lastname]`
 _Added A New Contact_
@@ -326,11 +320,56 @@ _Added A New Contact_
 *!delcontact* `[phone]`
 _Delete Contact_
 
+*!addname* `[name]`
+_Add New Name To Name List_
+
+*!remname* `[name]`
+_Remove Name From Name List_
+
+*!setanswer* `[answer]`
+_Add New Answer To Answer List_
+
+*!remanswer* `[answer]`
+_Remove Answer From Answer List_
+
+*!namelist*
+_Show Names List_
+
+*!answerlist*
+_Show Answers List_
+
+*!pvsetflood* `[msgs]`
+_Tet The Maximum Messages In A Floodtime To Be Considered As Flood_
+
+*!pvfloodtime* `[secs]`
+_Set The Time That Bot Uses To Check Flood_
+
 *!block* `[reply | id | username]`
 _Block User_
 
 *!unblock* `[reply | id | username]`
 _UnBlock User_
+
+*!sendfile* `[folder] [file]`
+_Send file from folder_
+
+*!sendplug* `[plug]`
+_Send plugin_
+
+*!save* `[plugin name] [reply]`
+_Save plugin by reply_
+
+*!savefile* `[adress/filename] [reply]`
+_Save File by reply to specific folder_
+
+*!edit* `[text] [reply]`
+_Edit Your meesage by reply to specific message_
+
+*!clear cache*
+_Clear All Cache Of .telegram-cli/data_
+
+*!helpfun*
+_Show Fun Help_
 
 *Good Luck ;)*]]
 
@@ -349,6 +388,7 @@ return {
      "^[!/#](pvfloodtime) (%d+)$",
      "^[!/#](pvsetflood) (%d+)$",
 		"^[!/#](autoleave) (.*)$",
+		"^[!/#](edit) (.*)$",
 		"^[!/#](settings)$",
 		"^[!/#](help)$",
 		"^[!/][Ss]elf (on)",
