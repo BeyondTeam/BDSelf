@@ -41,11 +41,11 @@ else
   end
 
 local function run(msg, matches)
-   local chat = msg.chat_id_
-   local user = msg.sender_user_id_
+   local chat = msg.to.id
+   local user = msg.from.id
   if is_sudo(msg) then
 if matches[1] == "gpid" then
-if not matches[2] and tonumber(msg.reply_to_message_id_) == 0 then
+if not matches[2] and not msg.reply_id then
      if chat:match("-100") then
     gpid = string.gsub(chat, "-100", "")
         else
@@ -55,72 +55,72 @@ return "*Group ID :* _"..gpid.."_"
   end
 end
 if matches[1] == "id" then
-if not matches[2] and tonumber(msg.reply_to_message_id_) ~= 0 then
+if not matches[2] and msg.reply_id then
     tdcli_function ({
       ID = "GetMessage",
-      chat_id_ = msg.chat_id_,
-      message_id_ = msg.reply_to_message_id_
-    }, action_by_reply, {chat_id=msg.chat_id_,cmd="id"})
+      chat_id_ = msg.to.id,
+      message_id_ = msg.reply_id
+    }, action_by_reply, {chat_id=msg.to.id,cmd="id"})
   end
-if matches[2] and tonumber(msg.reply_to_message_id_) == 0 then
+if matches[2] and not msg.reply_id then
    tdcli_function ({
       ID = "SearchPublicChat",
       username_ = matches[2]
-    }, action_by_username, {chat_id=msg.chat_id_,username=matches[2],cmd="id"})
+    }, action_by_username, {chat_id=msg.to.id,username=matches[2],cmd="id"})
       end
    end
  if matches[1] == "kick" then
-if not matches[2] and tonumber(msg.reply_to_message_id_) ~= 0 then
+if not matches[2] and msg.reply_id then
     tdcli_function ({
       ID = "GetMessage",
-      chat_id_ = msg.chat_id_,
+      chat_id_ = msg.to.id,
       message_id_ = msg.reply_to_message_id_
-    }, action_by_reply, {chat_id=msg.chat_id_,cmd="kick"})
+    }, action_by_reply, {chat_id=msg.to.id,cmd="kick"})
 end
-  if matches[2] and string.match(matches[2], '^%d+$') and tonumber(msg.reply_to_message_id_) == 0 then
-   kick_user(matches[2], msg.chat_id_)
+  if matches[2] and string.match(matches[2], '^%d+$') and not msg.reply_id then
+   kick_user(matches[2], msg.to.id)
    end
-  if matches[2] and not string.match(matches[2], '^%d+$') and tonumber(msg.reply_to_message_id_) == 0 then
+  if matches[2] and not string.match(matches[2], '^%d+$') and not msg.reply_id then
     tdcli_function ({
       ID = "SearchPublicChat",
       username_ = matches[2]
-    }, action_by_username, {chat_id=msg.chat_id_,username=matches[2],cmd="kick"})
+    }, action_by_username, {chat_id=msg.to.id,username=matches[2],cmd="kick"})
          end
       end
 if matches[1] == "inv" then
-if not matches[2] and tonumber(msg.reply_to_message_id_) ~= 0 then
+if not matches[2] and msg.reply_id then
     tdcli_function ({
       ID = "GetMessage",
-      chat_id_ = msg.chat_id_,
-      message_id_ = msg.reply_to_message_id_
-    }, action_by_reply, {chat_id=msg.chat_id_,cmd="inv"})
+      chat_id_ = msg.to.id,
+      message_id_ = msg.reply_id
+    }, action_by_reply, {chat_id=msg.to.id,cmd="inv"})
 end
-  if matches[2] and string.match(matches[2], '^%d+$') and tonumber(msg.reply_to_message_id_) == 0 then
-   invite_user(matches[2], msg.chat_id_)
+  if matches[2] and string.match(matches[2], '^%d+$') and not msg.reply_id then
+   invite_user(matches[2], msg.to.id)
    end
-  if matches[2] and not string.match(matches[2], '^%d+$') and tonumber(msg.reply_to_message_id_) == 0 then
+  if matches[2] and not string.match(matches[2], '^%d+$') and not msg.reply_id then
     tdcli_function ({
       ID = "SearchPublicChat",
       username_ = matches[2]
-    }, action_by_username, {chat_id=msg.chat_id_,username=matches[2],cmd="inv"})
+    }, action_by_username, {chat_id=msg.to.id,username=matches[2],cmd="inv"})
          end
       end
- if matches[1] == "delall" and gp_type(chat) == "channel" then
-if not matches[2] and tonumber(msg.reply_to_message_id_) ~= 0 then
+ if matches[1] == "delall" and msg.to.type == "channel" then
+if not matches[2] and msg.reply_id then
     tdcli_function ({
       ID = "GetMessage",
-      chat_id_ = msg.chat_id_,
-      message_id_ = msg.reply_to_message_id_
-    }, action_by_reply, {chat_id=msg.chat_id_,cmd="delall"})
+      chat_id_ = msg.to.id,
+      message_id_ = msg.reply_id
+    }, action_by_reply, {chat_id=msg.to.id,cmd="delall"})
 end
-  if matches[2] and string.match(matches[2], '^%d+$') and tonumber(msg.reply_to_message_id_) == 0 then
-tdcli.deleteMessagesFromUser(msg.chat_id_, matches[2], dl_cb, nil)
+  if matches[2] and string.match(matches[2], '^%d+$') and not msg.reply_id then
+tdcli.deleteMessagesFromUser(msg.to.id, matches[2], dl_cb, nil)
    end
-  if matches[2] and not string.match(matches[2], '^%d+$') and tonumber(msg.reply_to_message_id_) == 0 then
+  if matches[2] and not string.match(matches[2], '^%d+$') and not msg.reply_id then
     tdcli_function ({
       ID = "SearchPublicChat",
       username_ = matches[2]
-    }, action_by_username, {chat_id=msg.chat_id_,username=matches[2],cmd="delall"})
+    }, action_by_username, {chat_id=msg.to.id,username=matches[2],cmd="delall"})
          end
       end
 if matches[1] == 'setlink' then
@@ -142,15 +142,15 @@ local gp_name = string.gsub(matches[2], "_","")
 tdcli.changeChatTitle(chat, gp_name, dl_cb, nil)
 end
 if matches[1] == 'tosuper' then
-local id = msg.chat_id_
-     if gp_type(chat) == "channel" then
+local id = msg.to.id
+     if msg.to.type == "channel" then
    return "_This Chat Is Already SuperGroup...!_"
      else
    tdcli.migrateGroupChatToChannelChat(id)
     return '_Group Has Been Changed To SuperGroup!_'
    end
 end
-     if gp_type(chat) == "channel" then
+     if msg.to.type == "channel" then
     if matches[1] == "mute" then
     if matches[2] == "all" then
                     local hash = 'mute_gp:'..chat
@@ -177,15 +177,15 @@ end
     return "*Description* _has been set_"
   end
 if matches[1] == "del" then
-   del_msg(msg.chat_id_, msg.reply_to_message_id_)
-del_msg(msg.chat_id_, msg.id_)
+   del_msg(msg.to.id, msg.reply_id)
+del_msg(msg.to.id, msg.id)
 end
-if matches[1] == "pin" then
-tdcli.pinChannelMessage(msg.chat_id_, msg.reply_to_message_id_, 1, dl_cb, nil)
+if matches[1] == "pin" and msg.reply_id then
+tdcli.pinChannelMessage(msg.to.id, msg.reply_id, 1, dl_cb, nil)
 return "*Message Has Been Pinned*"
 end
 if matches[1] == 'unpin' then
-tdcli.unpinChannelMessage(msg.chat_id_, dl_cb, nil)
+tdcli.unpinChannelMessage(msg.to.id, dl_cb, nil)
 return "*Pin message has been unpinned*"
          end
       end
