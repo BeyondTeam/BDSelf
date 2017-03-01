@@ -27,23 +27,23 @@ local function list_all_plugins(only_enabled)
   local nsum = 0
   for k, v in pairs( plugins_names( )) do
     --  ✔ enabled, ❌ disabled
-    local status = '*[Inactive]>>*'
+    local status = '*|✖️|>*'
     nsum = nsum+1
     nact = 0
     -- Check if is enabled
     for k2, v2 in pairs(_config.enabled_plugins) do
       if v == v2..'.lua' then 
-        status = '*[active]>>*'
+        status = '*|✔|>*'
       end
       nact = nact+1
     end
-    if not only_enabled or status == '*[active]>>*'then
+    if not only_enabled or status == '*|✔|>*'then
       -- get the name
       v = string.match (v, "(.*)%.lua")
-      text = text..nsum..'.'..status..' '..v..' \n'
+      text = text..nsum..'.'..status..' '..check_markdown(v)..' \n'
     end
   end
-  local text = text..'\n\n'..nsum..' *plugins installed*\n\n'..nact..' _plugins enabled_\n\n'..nsum-nact..' _plugins disabled_'..tmp
+  local text = text..'\n\n'..nsum..' *📂plugins installed*\n\n'..nact..' _✔️plugins enabled_\n\n'..nsum-nact..' _❌plugins disabled_'..tmp
   return text
 end
 
@@ -52,23 +52,23 @@ local function list_plugins(only_enabled)
   local nsum = 0
   for k, v in pairs( plugins_names( )) do
     --  ✔ enabled, ❌ disabled
-    local status = '*[Inactive]>>*'
+    local status = '*|✖️|>*'
     nsum = nsum+1
     nact = 0
     -- Check if is enabled
     for k2, v2 in pairs(_config.enabled_plugins) do
       if v == v2..'.lua' then 
-        status = '*[active]>>*'
+        status = '*|✔|>*'
       end
       nact = nact+1
     end
-    if not only_enabled or status == '*[active]>>*'then
+    if not only_enabled or status == '*|✔|>*'then
       -- get the name
       v = string.match (v, "(.*)%.lua")
      -- text = text..v..'  '..status..'\n'
     end
   end
-  local text = text.."\n_All Plugins Reloaded_\n\n"..nact.." *Plugins Enabled*\n"..nsum.." *Plugins Installed*\n\n@BeyondTeam"
+  local text = text.."\n_🔃All Plugins Reloaded_\n\n"..nact.." *✔️Plugins Enabled*\n"..nsum.." *📂Plugins Installed*\n\n@BeyondTeam"
 return text
 end
 
@@ -230,3 +230,4 @@ return {
 }
 
 end
+
