@@ -1,19 +1,19 @@
 --[[
 ################################
 #                              #
-#                     Self Plugin           #
+#        Self Plugin           #
 #                              #
 #                              #
-#          by @SoLiD ⇨Saeid⇦    #
+#     by @SoLiD ⇨Saeid⇦       #
 #                              #
 #                              #
 #   Team Channel @BeyondTeam   #
-#	                           #
+#	                       #
 #                              #
-#     Update: 23 January 2017    #
+#     Update: 2 March 2017     #
 #                              #
-#                              #
-#    Special Thx To  @Exacute for idea    #
+#       Special Thx To         # 
+#     @Exacute for idea        #
 #                              #
 ################################
 ]]
@@ -130,23 +130,23 @@ local text = answer[math.random(#answer)]
       local answer = matches[2]
       return rem_answer(answer)
          elseif matches[1]:lower() == 'namelist' and is_sudo(msg) then
-  return tdcli.sendMessage(msg.chat_id_, msg.id_, 0, namelist(msg), 0, "md")
+  return tdcli.sendMessage(msg.to.id, msg.id, 0, namelist(msg), 0, "md")
          elseif matches[1]:lower() == 'answerlist' and is_sudo(msg) then
-  return tdcli.sendMessage(msg.chat_id_, msg.id_, 0, answerlist(msg), 0, "md")
+  return tdcli.sendMessage(msg.to.id, msg.id, 0, answerlist(msg), 0, "md")
     end
 if self_names(matches[1]) then
- local chat = tostring(msg.chat_id_)
+ local chat = tostring(msg.to.id)
      if chat:match("-100") then
-    gpid = string.gsub(msg.chat_id_, "-100", "")
+    gpid = string.gsub(msg.to.id, "-100", "")
      elseif chat:match("-") then
-    gpid = string.gsub(msg.chat_id_, "-", "")
+    gpid = string.gsub(msg.to.id, "-", "")
    end
  local hash = 'on-off:'..gpid
     if not is_sudo(msg) then
    if redis:get(hash) then
   return nil
      elseif not redis:get(hash) then
-  return tdcli.sendMessage(msg.chat_id_, msg.id_, 0, text, 0, "md")
+  return tdcli.sendMessage(msg.to.id, msg.id, 0, text, 0, "md")
          end
       end
    end 
