@@ -732,8 +732,21 @@ M.deleteMessagesFromUser = deleteMessagesFromUser
 -- @message_id Identifier of the message
 -- @reply_markup Bots only. New message reply markup
 -- @input_message_content New text content of the message. Should be of type InputMessageText
-local function editMessageText(chat_id, message_id, reply_markup, text, disable_web_page_preview, parse_mode, dl_cb, cmd)
+local function editMessageText(chat_id, message_id, reply_markup, text, disable_web_page_preview, parse_mode, dl_cb, cmd, user_id)
   local TextParseMode = getParseMode(parse_mode)
+Entities = {} 
+if user_id then 
+if text:match('<user>') and text:match('</user>') then 
+local A = {text:match("<user>(.*)</user>")} 
+Length = utf8.len(A[1]) 
+local B = {text:match("^(.*)<user>")} 
+Offset = utf8.len(B[1]) 
+text = text:gsub('<user>','') 
+text = text:gsub('</user>','') 
+table.insert(Entities,{ID = "MessageEntityMentionName", offset_ = Offset, length_ = Length, user_id_ = user_id}) 
+end 
+Entities[0] = {ID='MessageEntityBold', offset_=0, length_=0} 
+end
 
   tdcli_function ({
     ID = "EditMessageText",
@@ -745,7 +758,7 @@ local function editMessageText(chat_id, message_id, reply_markup, text, disable_
       text_ = text,
       disable_web_page_preview_ = disable_web_page_preview,
       clear_draft_ = 0,
-      entities_ = {},
+      entities_ = Entities,
       parse_mode_ = TextParseMode,
     },
   }, dl_cb, cmd)
