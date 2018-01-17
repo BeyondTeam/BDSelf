@@ -62,6 +62,10 @@ Then restart Bot.
 
 [@Vysheng](https://github.com/vysheng)
 
+[@MrHalix](https://telegram.me/MAKAN)
+
+[@kuncen](https://telegram.me/kuncen)
+
 # Support and development
 
 More information [Beyond Development](https://telegram.me/joinchat/AAAAAD9JFZlMveUl8q99gA)
