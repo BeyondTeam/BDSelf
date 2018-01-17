@@ -1,4 +1,4 @@
-# [Self-Bot](https://telegram.me/BeyondTeam)
+# [BDSelf v3.0](https://telegram.me/BeyondTeam)
 
 Professional Self-Bot Based On NEW TG-CLI
 
@@ -44,12 +44,18 @@ Open ./bot/bot.lua and add your ID to the "sudo_users" section in the following 
     YourID
   }
 ```
-add your ID at line 4 and 131 in bot.lua
-Then restart or reload.
+add your ID at line 131 in bot.lua
+Then restart Bot.
 
-# Support and development
+* * *
 
-More information [Beyond Development](https://telegram.me/joinchat/AAAAAD9JFZlMveUl8q99gA)
+# Developers!
+
+[SoLiD](https://github.com/solid021) ([Telegram](https://telegram.me/SoLiD))
+
+[ToOfan](https://github.com/To0fan) ([Telegram](https://telegram.me/ToOfan))
+
+[MAKAN](https://github.com/makanj) ([Telegram](https://telegram.me/MAKAN))
 
 # Special thanks to
 [@MrPars](https://telegram.me/MrPars)
@@ -58,17 +64,9 @@ More information [Beyond Development](https://telegram.me/joinchat/AAAAAD9JFZlM
 
 [@Vysheng](https://github.com/vysheng)
 
-* * *
+# Support and development
 
-# Developers!
-
-[SoLiD](https://github.com/solid021) ([Telegram](https://telegram.me/SoLiD))
-
-[MAKAN](https://github.com/makanj) ([Telegram](https://telegram.me/MAKAN))
-
-[Ali](https://github.com/ali-ghoghnoos) ([Telegram](https://telegram.me/Exacute))
-
-[Civey](https://github.com/Oysof) ([Telegram](https://telegram.me/Civey))
+More information [Beyond Development](https://telegram.me/joinchat/AAAAAD9JFZlMveUl8q99gA)
 
 ### Our Telegram channel:
 
