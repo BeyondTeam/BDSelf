@@ -79,7 +79,7 @@ local function get_weather(location)
 	elseif weather.weather[1].main == 'Mist' then
 		conditions = conditions .. 'مه 💨'
 	end
-	return temp .. '\n' .. conditions
+	return edit_msg(msg.to.id, msg.id, temp .. '\n' .. conditions, "md")
 end
 --------------------------------
 local function calc(exp)
@@ -95,7 +95,7 @@ local function calc(exp)
 		text = 'Unexpected error\n'
 		..'Is api.mathjs.org up?'
 	end
-	return text
+	return edit_msg(msg.to.id, msg.id, text, "md")
 end
 --------------------------------
 function exi_file(path, suffix)
@@ -169,7 +169,7 @@ _You can use_ *[!/#]* _at the beginning of commands._
 
 *Good luck ;)*]]
 tdcli.sendMessage(msg.from.id, 0, 1, text, 1, 'md')
-       return "_Fun help was send in your private message_"
+        return edit_msg(msg.to.id, msg.id, "_Fun help was send in your private message_", "md")
     end
 	if matches[1]:lower() == "calc" and matches[2] and is_sudo(msg) then 
 		if msg.to.type == "pv" then 
@@ -197,7 +197,7 @@ tdcli.sendMessage(msg.from.id, 0, 1, text, 1, 'md')
 		text = text..'\nاذان مغرب: '..data.Maghrib
 		text = text..'\nعشاء : '..data.Isha
 		text = text..'\n@BeyondTeam\n'
-		return tdcli.sendMessage(msg.chat_id_, 0, 1, text, 1, 'html')
+        return edit_msg(msg.to.id, msg.id, text, "html")
 	end
 --------------------------------
 	if matches[1]:lower() == 'tophoto' and is_sudo(msg) and msg.reply_id then
@@ -215,12 +215,17 @@ tdcli.sendMessage(msg.from.id, 0, 1, text, 1, 'md')
 					local apath = tostring(tcpath)..'/data/sticker'
 					if file_exi(tostring(name), tostring(apath), tostring(pasvand)) then
 						os.rename(file, pfile)
+   if msg.to.type == "channel" then
+    del_msg(msg.to.id, msg.id)
+       else
+     edit_msg(msg.to.id, msg.id, "😐", "md")
+   end
 						tdcli.sendPhoto(msg.to.id, 0, 0, 1, nil, pfile, "@BeyondTeam", dl_cb, nil)
 					else
-						tdcli.sendMessage(msg.to.id, msg.id_, 1, '_This sticker does not exist. Send sticker again._', 1, 'md')
+         edit_msg(msg.to.id, msg.id, '_This sticker does not exist. Send sticker again._', "md")
 					end
 				else
-					tdcli.sendMessage(msg.to.id, msg.id_, 1, '_This is not a sticker._', 1, 'md')
+         edit_msg(msg.to.id, msg.id, '_This is not a sticker._', "md")
 				end
 			end
             tdcli_function ({ ID = 'GetMessage', chat_id_ = msg.chat_id_, message_id_ = data.id_ }, tophoto_cb, nil)
@@ -237,12 +242,17 @@ tdcli.sendMessage(msg.from.id, 0, 1, text, 1, 'md')
 					local pfile = 'data/photos/'..file..'.webp'
 					if file_exi(file..'_(1).jpg', tcpath..'/data/photo', 'jpg') then
 						os.rename(pathf, pfile)
+   if msg.to.type == "channel" then
+    del_msg(msg.to.id, msg.id)
+       else
+     edit_msg(msg.to.id, msg.id, "😐", "md")
+   end
 						tdcli.sendDocument(msg.chat_id_, 0, 0, 1, nil, pfile, '@BeyondTeam', dl_cb, nil)
 					else
-						tdcli.sendMessage(msg.to.id, msg.id_, 1, '_This photo does not exist. Send photo again._', 1, 'md')
+         edit_msg(msg.to.id, msg.id, '_This photo does not exist. Send sticker again._', "md")
 					end
 				else
-					tdcli.sendMessage(msg.to.id, msg.id_, 1, '_This is not a photo._', 1, 'md')
+         edit_msg(msg.to.id, msg.id, '_This is not a photo._', "md")
 				end
 			end
 			tdcli_function ({ ID = 'GetMessage', chat_id_ = msg.chat_id_, message_id_ = data.id_ }, tosticker_cb, nil)
@@ -256,11 +266,11 @@ tdcli.sendMessage(msg.from.id, 0, 1, text, 1, 'md')
 		if not wtext then
 			wtext = 'مکان وارد شده صحیح نیست'
 		end
-		return wtext
+		return edit_msg(msg.to.id, msg.id, wtext, "md")
 	end
 --------------------------------
 	if matches[1]:lower() == 'time' and is_sudo(msg) then
-		local url , res = http.request('http://api.gpmod.ir/time/')
+		local url , res = http.request('http://irapi.ir/time/')
 		if res ~= 200 then
 			return "No connection"
 		end
@@ -269,6 +279,11 @@ tdcli.sendMessage(msg.from.id, 0, 1, text, 1, 'md')
 		local jdat = json:decode(url)
 		local url = 'http://latex.codecogs.com/png.download?'..'\\dpi{600}%20\\huge%20\\'..fonts[math.random(#fonts)]..'{{\\color{'..colors[math.random(#colors)]..'}'..jdat.ENtime..'}}'
 		local file = download_to_file(url,'time.webp')
+   if msg.to.type == "channel" then
+    del_msg(msg.to.id, msg.id)
+       else
+     edit_msg(msg.to.id, msg.id, "😐", "md")
+   end
 		tdcli.sendDocument(msg.to.id, 0, 0, 1, nil, file, '', dl_cb, nil)
 
 	end
@@ -282,6 +297,11 @@ if matches[1] == 'voice' and is_sudo(msg) then
       else
   local url = "http://tts.baidu.com/text2audio?lan=en&ie=UTF-8&text="..textc
   local file = download_to_file(url,'Self-BotV2.mp3')
+   if msg.to.type == "channel" then
+    del_msg(msg.to.id, msg.id)
+       else
+     edit_msg(msg.to.id, msg.id, "😐", "md")
+   end
  				tdcli.sendDocument(msg.to.id, 0, 0, 1, nil, file, '@BeyondTeam', dl_cb, nil)
    end
 end
@@ -290,7 +310,8 @@ end
 	if matches[1] == "tr" and is_sudo(msg) then 
 		url = https.request('https://translate.yandex.net/api/v1.5/tr.json/translate?key=trnsl.1.1.20160119T111342Z.fd6bf13b3590838f.6ce9d8cca4672f0ed24f649c1b502789c9f4687a&format=plain&lang='..URL.escape(matches[2])..'&text='..URL.escape(matches[3]))
 		data = json:decode(url)
-		return 'زبان : '..data.lang..'\nترجمه : '..data.text[1]..'\n____________________\n @BeyondTeam :)'
+		local text = 'زبان : '..data.lang..'\nترجمه : '..data.text[1]..'\n____________________\n @BeyondTeam :)'
+   return edit_msg(msg.to.id, msg.id, text, "md")
 	end
 --------------------------------
 	if matches[1]:lower() == 'short' and is_sudo(msg) then
@@ -303,12 +324,10 @@ end
 		local jdat = json:decode(yon)
 		local bitly = https.request('https://api-ssl.bitly.com/v3/shorten?access_token=f2d0b4eabb524aaaf22fbc51ca620ae0fa16753d&longUrl='..URL.escape(shortlink))
 		local data = json:decode(bitly)
-		local yeo = http.request('http://yeo.ir/api.php?url='..URL.escape(shortlink)..'=')
-		local opizo = http.request('http://api.gpmod.ir/shorten/?url='..URL.escape(shortlink)..'&username=mersad565@gmail.com')
 		local u2s = http.request('http://u2s.ir/?api=1&return_text=1&url='..URL.escape(shortlink))
 		local llink = http.request('http://llink.ir/yourls-api.php?signature=a13360d6d8&action=shorturl&url='..URL.escape(shortlink)..'&format=simple')
-		local text = ' 🌐لینک اصلی :\n'..check_markdown(data.data.long_url)..'\n\nلینکهای کوتاه شده با 6 سایت کوتاه ساز لینک : \n》کوتاه شده با bitly :\n___________________________\n'..check_markdown(data.data.url)..'\n___________________________\n》کوتاه شده با yeo :\n'..check_markdown(yeo)..'\n___________________________\n》کوتاه شده با اوپیزو :\n'..check_markdown(opizo)..'\n___________________________\n》کوتاه شده با u2s :\n'..check_markdown(u2s)..'\n___________________________\n》کوتاه شده با llink : \n'..check_markdown(llink)..'\n___________________________\n》لینک کوتاه شده با yon : \nyon.ir/'..check_markdown(jdat.output)..'\n____________________\n @BeyondTeam :)'
-		return tdcli.sendMessage(msg.chat_id_, 0, 1, text, 1, 'html')
+		local text = ' 🌐لینک اصلی :\n'..check_markdown(data.data.long_url)..'\n\nلینکهای کوتاه شده با 6 سایت کوتاه ساز لینک : \n》کوتاه شده با bitly :\n___________________________\n'..(check_markdown(data.data.url) or '---')..'\n___________________________\n》کوتاه شده با u2s :\n'..(check_markdown(u2s) or '---')..'\n___________________________\n》کوتاه شده با llink : \n'..(check_markdown(llink) or '---')..'\n___________________________\n》لینک کوتاه شده با yon : \nyon.ir/'..(check_markdown(jdat.output) or '---')..'\n____________________\n@BeyondTeam'
+		return edit_msg(msg.to.id, msg.id, text, "html")
 	end
 --------------------------------
 	if matches[1]:lower() == "sticker" and is_sudo(msg) then 
@@ -330,6 +349,11 @@ end
 		local url = "https://assets.imgix.net/examples/clouds.jpg?blur=150&w="..w.."&h="..h.."&fit=crop&txt="..eq.."&txtsize="..txtsize.."&txtclr="..txtclr.."&txtalign=middle,center&txtfont=Futura%20Condensed%20Medium&mono=ff6598cc"
 		local receiver = msg.to.id
 		local  file = download_to_file(url,'text.webp')
+   if msg.to.type == "channel" then
+    del_msg(msg.to.id, msg.id)
+       else
+     edit_msg(msg.to.id, msg.id, "😐", "md")
+   end
 		tdcli.sendDocument(msg.to.id, 0, 0, 1, nil, file, '', dl_cb, nil)
 	end
 --------------------------------
@@ -352,6 +376,11 @@ end
 		local url = "https://assets.imgix.net/examples/clouds.jpg?blur=150&w="..w.."&h="..h.."&fit=crop&txt="..eq.."&txtsize="..txtsize.."&txtclr="..txtclr.."&txtalign=middle,center&txtfont=Futura%20Condensed%20Medium&mono=ff6598cc"
 		local receiver = msg.to.id
 		local  file = download_to_file(url,'text.jpg')
+   if msg.to.type == "channel" then
+    del_msg(msg.to.id, msg.id)
+       else
+     edit_msg(msg.to.id, msg.id, "😐", "md")
+   end
 		tdcli.sendPhoto(msg.to.id, 0, 0, 1, nil, file, "@BeyondTeam", dl_cb, nil)
 	end
 end

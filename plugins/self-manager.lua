@@ -43,29 +43,14 @@ local function show_bot_settings(msg)
     end
 if msg.to.type == 'channel' then
     text = text..'_》Auto Leave :_ *'..autoleave..'*\n_》Mute All :_ *'..muteall..'*\n_》Messages Read :_ *'..markread..'*\n_》Pv Max Flood :_ *['..MSG_NUM_MAX..']*\n_》Pv Flood Time Check :_ *['..TIME_CHECK..']*\n_》Pv Flood Protection :_ *'..antiflood..'*\n*》*@BeyondTeam*《*'
-return text
+return edit_msg(msg.to.id, msg.id, text, "md")
 elseif msg.to.type == 'pv' or msg.to.type == 'chat' then
     text = text..'_》Auto Leave :_ *'..autoleave..'*\n_》Messages Read :_ *'..markread..'*\n_》Pv Max Flood :_ *['..MSG_NUM_MAX..']*\n_》Pv Flood Time Check :_ *['..TIME_CHECK..']*\n_》Pv Flood Protection :_ *'..antiflood..'*\n*》*@BeyondTeam*《*'
-return text
+return edit_msg(msg.to.id, msg.id, text, "md")
    end
 end
 
-local function enable_channel(receiver)
-	if not _config.disabled_channels then
-		_config.disabled_channels = {}
-	end
-
-	if _config.disabled_channels[receiver] == nil or _config.disabled_channels[receiver] == false then
-		return "`Self Is Not Off :)`"
-	end
-	
-	_config.disabled_channels[receiver] = false
-
-	save_config()
-	return tdcli.sendMessage(receiver, "", 0, "*Self Is On Now :D*", 0, "md")
-end
-
-local function disable_channel( receiver )
+local function disable_channel(msg, receiver)
  if not _config.disabled_channels then
   _config.disabled_channels = {}
  end
@@ -73,7 +58,7 @@ local function disable_channel( receiver )
  _config.disabled_channels[receiver] = true
 
  save_config()
- return "*Self Is Off Now :/*"
+ return edit_msg(msg.to.id, msg.id, "*Self Is Off Now :/*", "md")
 end
 
 local function pre_process(msg)
@@ -81,14 +66,33 @@ local chat_id = msg.to.id
 local user_id = msg.from.id
 local hash = 'autoleave' 
 
-	if is_sudo(msg) then
-	  if msg.content_.text_ == "/self on" or msg.content_.text_ == "/Self on" or msg.content_.text_ == "!self on" or msg.content_.text_ == "!Self on" then
-	  
-	    enable_channel(msg.chat_id_)
-	  end
-	end
+if not redis:get('autodeltime-self') then
+	redis:setex('autodeltime-self', 14400, true)
+     run_bash("rm -rf ~/.telegram-cli/data/sticker/*")
+     run_bash("rm -rf ~/.telegram-cli/data/photo/*")
+     run_bash("rm -rf ~/.telegram-cli/data/animation/*")
+     run_bash("rm -rf ~/.telegram-cli/data/video/*")
+     run_bash("rm -rf ~/.telegram-cli/data/audio/*")
+     run_bash("rm -rf ~/.telegram-cli/data/voice/*")
+     run_bash("rm -rf ~/.telegram-cli/data/temp/*")
+     run_bash("rm -rf ~/.telegram-cli/data/thumb/*")
+     run_bash("rm -rf ~/.telegram-cli/data/document/*")
+     run_bash("rm -rf ~/.telegram-cli/data/profile_photo/*")
+     run_bash("rm -rf ~/.telegram-cli/data/encrypted/*")
+	 run_bash("rm -rf ./data/photos/*")
+end
 
-if tonumber(msg.adduser) == our_id and not redis:get(hash) then
+  if msg.from.id then
+    local hash = 'user:'..msg.from.id
+    if msg.from.username then
+     user_name = '@'..msg.from.username
+  else
+     user_name = msg.from.print_name
+    end
+      redis:hset(hash, 'user_name', user_name)
+  end
+
+if msg.adduser and tonumber(msg.adduser) == tonumber(our_id) and not redis:get(hash) then
  tdcli.sendMessage(msg.to.id, "", 0, "_Don't invite me_ *JackAss :/*", 0, "md")
   tdcli.changeChatMemberStatus(msg.to.id, our_id, 'Left', dl_cb, nil)
 end
@@ -149,14 +153,15 @@ redis:sadd(flooder, user_id)
          end
     end
 end
-   if redis:get("mute_gp:"..msg.to.id) and not is_sudo(msg) then
+
+   if (is_silented_user(msg.to.id, msg.from.id) or redis:get("mute_gp:"..msg.to.id)) and not is_sudo(msg) then
    del_msg(msg.to.id, msg.id)
   end
 -----------------------
 end
 -------------------
 local function run(msg, matches)
-local receiver = msg.chat_id_
+local receiver = msg.to.id
 	-- Enable a channel
 	if not is_sudo(msg) then
 	return nil
@@ -165,7 +170,7 @@ local receiver = msg.chat_id_
   return enable_channel(receiver)
  end
  if matches[1] == 'off' then
-  return disable_channel(receiver)
+  return disable_channel(msg, receiver)
  end
 -----------------------
      if matches[1] == 'autoleave' and is_sudo(msg) then
@@ -173,18 +178,18 @@ local hash = 'autoleave'
 --Enable Auto Leave
      if matches[2] == 'on' then
      if not redis:get(hash) then
-   return 'Auto leave is already enabled'
+   return edit_msg(msg.to.id, msg.id, 'Auto leave is already enabled', "md")
       else
     redis:del(hash)
-   return 'Auto leave has been enabled'
+   return edit_msg(msg.to.id, msg.id, 'Auto leave has been enabled', "md")
      end
 --Disable Auto Leave
      elseif matches[2] == 'off' then
      if redis:get(hash) then
-   return 'Auto leave is already disabled'
+   return edit_msg(msg.to.id, msg.id, 'Auto leave is already disabled', "md")
       else
     redis:set(hash, true)
-   return 'Auto leave has been disabled'
+   return edit_msg(msg.to.id, msg.id, 'Auto leave has been disabled', "md")
          end
       end
    end
@@ -194,18 +199,18 @@ local hash = 'anti-flood'
 --Enable Anti-flood
      if matches[2] == 'on' then
   if not redis:get(hash) then
-    return '_Private_ *flood protection* _is already_ *enabled*'
+    return edit_msg(msg.to.id, msg.id, '_Private_ *flood protection* _is already_ *enabled*', "md")
     else
     redis:del(hash)
-   return reply_msg(msg.id, '_Private_ *flood protection* _has been_ *enabled*', ok_cb, false)
+   return edit_msg(msg.to.id, msg.id, '_Private_ *flood protection* _has been_ *enabled*', "md")
       end
 --Disable Anti-flood
      elseif matches[2] == 'off' then
   if redis:get(hash) then
-    return '_Private_ *flood protection* _is already_ *disabled*'
+    return edit_msg(msg.to.id, msg.id, '_Private_ *flood protection* _is already_ *disabled*', "md")
     else
     redis:set(hash, true)
-   return '_Private_ *flood protection* _has been_ *disabled*'
+   return edit_msg(msg.to.id, msg.id, '_Private_ *flood protection* _has been_ *disabled*', "md")
                    end
              end
        end
@@ -214,25 +219,20 @@ local hash = 'anti-flood'
                     else
                         hash = 'flood_time'
                         redis:set(hash, matches[2])
-            return '_Private_ *flood check time* _has been set to :_ *'..matches[2]..'*'
+            return edit_msg(msg.to.id, msg.id, '_Private_ *flood check time* _has been set to :_ *'..matches[2]..'*', "md")
                     end
           elseif matches[1] == 'pvsetflood' and is_sudo(msg) then
                     if not matches[2] then
                     else
                         hash = 'flood_max'
                         redis:set(hash, matches[2])
-            return '_Private_ *flood sensitivity* _has been set to :_ *'..matches[2]..'*'
+            return edit_msg(msg.to.id, msg.id, '_Private_ *flood sensitivity* _has been set to :_ *'..matches[2]..'*', "md")
                     end
                  end
 
        if matches[1] == 'settings' and is_sudo(msg) then
       return show_bot_settings(msg)
                  end
-
-       if matches[1] == 'edit' and matches[2] and is_sudo(msg) then
-       tdcli.editMessageText(msg.chat_id_, msg.reply_id, nil, matches[2], 1, 'md', dl_cb, nil)
-del_msg(msg.to.id, msg.id)
-   end
 
 if matches[1] == 'help' and is_sudo(msg) then
 
@@ -374,7 +374,7 @@ _Show Fun Help_
 *Good Luck ;)*]]
 
 tdcli.sendMessage(msg.sender_user_id_, "", 0, text, 0, "md")
-            return '_Help was send in your private message_'
+            return edit_msg(msg.to.id, msg.id, '_Help was send in your private message_', "md")
 end
 end
 
@@ -388,11 +388,11 @@ return {
      "^[!/#](pvfloodtime) (%d+)$",
      "^[!/#](pvsetflood) (%d+)$",
 		"^[!/#](autoleave) (.*)$",
-		"^[!/#](edit) (.*)$",
 		"^[!/#](settings)$",
 		"^[!/#](help)$",
-		"^[!/][Ss]elf (on)",
-		"^[!/][Ss]elf (off)" }, 
+		"^[!/][Ss]elf (off)" 
+}, 
 	run = run,
+moderated = true,
 	pre_process = pre_process
 }

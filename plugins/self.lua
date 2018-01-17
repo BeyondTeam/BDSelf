@@ -49,7 +49,7 @@ local text = "*Names list :*\n"
 for i=1,#namelist do
     text = text..i.." - "..namelist[i].."\n"
 end
-return text
+return edit_msg(msg.to.id, msg.id, text, "md")
 end
 
 local function answerlist(msg)
@@ -58,59 +58,59 @@ local text = "*Answers list :*\n"
 for i=1,#answerlist do
     text = text..i.." - "..answerlist[i].."\n"
 end
-return text
+return edit_msg(msg.to.id, msg.id, text, "md")
 end
 
-local function set_name( name )
+local function set_name(msg, name)
   -- Check if name founded
   if self_names(name) then
-    return '_Name_ *'..name..'* _founded_'
+    return edit_msg(msg.to.id, msg.id, '_Name_ *'..name..'* _founded_', "md")
   end
     -- Add to the self table
     table.insert(_self.names, name)
     save_self()
     reload_plugins( )
     -- Reload the plugins
-    return '_New name_ *'..name..'* _added to name list_'
+    return edit_msg(msg.to.id, msg.id, '_New name_ *'..name..'* _added to name list_', "md")
 end
 
-local function set_answer( answer )
+local function set_answer(msg, answer)
   -- Check if name founded
   if self_answers(answer) then
-    return '_Word_ *'..answer..'* _founded_'
+    return edit_msg(msg.to.id, msg.id, '_Word_ *'..answer..'* _founded_', "md")
   end
     -- Add to the self table
     table.insert(_self.answers, answer)
     save_self()
     reload_plugins( )
     -- Reload the plugins
-    return '_New word_ *'..answer..'* _added to answer list_'
+    return edit_msg(msg.to.id, msg.id, '_New word_ *'..answer..'* _added to answer list_', "md")
 end
 
-local function rem_name( name )
+local function rem_name(msg, name)
   local k = self_names(name)
   -- Check if name not founded
   if not k then
-    return '_Name_ *'..name..'* _not founded_'
+    return edit_msg(msg.to.id, msg.id, '_Name_ *'..name..'* _not founded_', "md")
   end
   -- remove and reload
   table.remove(_self.names, k)
   save_self( )
   reload_plugins(true)
-  return '_Name_ *'..name..'* _removed from name list_'
+  return edit_msg(msg.to.id, msg.id, '_Name_ *'..name..'* _removed from name list_', "md")
 end
 
-local function rem_answer( answer )
+local function rem_answer(msg, answer)
   local k = self_answers(answer)
   -- Check if answer not founded
   if not k then
-    return '_Word_ *'..answer..'* _not founded_'
+    return edit_msg(msg.to.id, msg.id, '_Word_ *'..answer..'* _not founded_', "md")
   end
   -- remove and reload
   table.remove(_self.answers, k)
   save_self( )
   reload_plugins(true)
-  return '_Word_ *'..answer..'* _removed from answer list_'
+  return edit_msg(msg.to.id, msg.id, '_Word_ *'..answer..'* _removed from answer list_', "md")
 end
 
 local function run(msg, matches)
@@ -119,16 +119,16 @@ local text = answer[math.random(#answer)]
 
 			if matches[1]:lower() == "addname" and is_sudo(msg) then
       local name = matches[2]
-      return set_name(name)
+      return set_name(msg, name)
       elseif matches[1]:lower() == "remname" and is_sudo(msg) then
       local name = matches[2]
-      return rem_name(name)
+      return rem_name(msg, name)
 			elseif matches[1]:lower() == "setanswer" and is_sudo(msg) then
       local answer = matches[2]
-      return set_answer(answer)
+      return set_answer(msg, answer)
       elseif matches[1]:lower() == "remanswer" and is_sudo(msg) then
       local answer = matches[2]
-      return rem_answer(answer)
+      return rem_answer(msg, answer)
          elseif matches[1]:lower() == 'namelist' and is_sudo(msg) then
   return tdcli.sendMessage(msg.to.id, msg.id, 0, namelist(msg), 0, "md")
          elseif matches[1]:lower() == 'answerlist' and is_sudo(msg) then
@@ -136,18 +136,8 @@ local text = answer[math.random(#answer)]
     end
 if self_names(matches[1]) then
  local chat = tostring(msg.to.id)
-     if chat:match("-100") then
-    gpid = string.gsub(msg.to.id, "-100", "")
-     elseif chat:match("-") then
-    gpid = string.gsub(msg.to.id, "-", "")
-   end
- local hash = 'on-off:'..gpid
     if not is_sudo(msg) then
-   if redis:get(hash) then
-  return nil
-     elseif not redis:get(hash) then
   return tdcli.sendMessage(msg.to.id, msg.id, 0, text, 0, "md")
-         end
       end
    end 
 end

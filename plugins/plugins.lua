@@ -21,7 +21,7 @@ local function plugin_exists( name )
   return false
 end
 
-local function list_all_plugins(only_enabled)
+local function list_all_plugins(msg, only_enabled)
   local tmp = '\n\n@BeyondTeam'
   local text = ''
   local nsum = 0
@@ -44,10 +44,10 @@ local function list_all_plugins(only_enabled)
     end
   end
   local text = text..'\n\n'..nsum..' *📂plugins installed*\n\n'..nact..' _✔️plugins enabled_\n\n'..nsum-nact..' _❌plugins disabled_'..tmp
-  return text
+  return edit_msg(msg.to.id, msg.id, text, "md")
 end
 
-local function list_plugins(only_enabled)
+local function list_plugins(msg, only_enabled)
   local text = ''
   local nsum = 0
   for k, v in pairs( plugins_names( )) do
@@ -69,21 +69,21 @@ local function list_plugins(only_enabled)
     end
   end
   local text = text.."\n_🔃All Plugins Reloaded_\n\n"..nact.." *✔️Plugins Enabled*\n"..nsum.." *📂Plugins Installed*\n\n@BeyondTeam"
-return text
+return edit_msg(msg.to.id, msg.id, text, "md")
 end
 
-local function reload_plugins( )
+local function reload_plugins(msg)
   plugins = {}
   load_plugins()
-  return list_plugins(true)
+  return list_plugins(msg, true)
 end
 
 
-local function enable_plugin( plugin_name )
+local function enable_plugin(msg, plugin_name)
   print('checking if '..plugin_name..' exists')
   -- Check if plugin is enabled
   if plugin_enabled(plugin_name) then
-    return ''..plugin_name..' _is enabled_'
+    return edit_msg(msg.to.id, msg.id, ''..plugin_name..' _is enabled_', "md")
   end
   -- Checks if plugin exists
   if plugin_exists(plugin_name) then
@@ -92,31 +92,31 @@ local function enable_plugin( plugin_name )
     print(plugin_name..' added to _config table')
     save_config()
     -- Reload the plugins
-    return reload_plugins( )
+    return reload_plugins(msg)
   else
-    return ''..plugin_name..' _does not exists_'
+    return edit_msg(msg.to.id, msg.id, ''..plugin_name..' _does not exists_', "md")
   end
 end
 
-local function disable_plugin( name, chat )
+local function disable_plugin(msg, name, chat )
   -- Check if plugins exists
   if not plugin_exists(name) then
-    return ' '..name..' _does not exists_'
+    return edit_msg(msg.to.id, msg.id, ' '..name..' _does not exists_', "md")
   end
   local k = plugin_enabled(name)
   -- Check if plugin is enabled
   if not k then
-    return ' '..name..' _not enabled_'
+    return edit_msg(msg.to.id, msg.id, ' '..name..' _not enabled_', "md")
   end
   -- Disable and reload
   table.remove(_config.enabled_plugins, k)
   save_config( )
-  return reload_plugins(true)    
+  return reload_plugins(msg)    
 end
 
-local function disable_plugin_on_chat(receiver, plugin)
+local function disable_plugin_on_chat(msg, receiver, plugin)
   if not plugin_exists(plugin) then
-    return "_Plugin doesn't exists_"
+    return edit_msg(msg.to.id, msg.id, "_Plugin doesn't exists_", "md")
   end
 
   if not _config.disabled_plugin_on_chat then
@@ -130,32 +130,32 @@ local function disable_plugin_on_chat(receiver, plugin)
   _config.disabled_plugin_on_chat[receiver][plugin] = true
 
   save_config()
-  return ' '..plugin..' _disabled on this chat_'
+  return edit_msg(msg.to.id, msg.id, ' '..plugin..' _disabled on this chat_', "md")
 end
 
-local function reenable_plugin_on_chat(receiver, plugin)
+local function reenable_plugin_on_chat(msg, receiver, plugin)
   if not _config.disabled_plugin_on_chat then
-    return 'There aren\'t any disabled plugins'
+    return edit_msg(msg.to.id, msg.id, 'There aren\'t any disabled plugins', "md")
   end
 
   if not _config.disabled_plugin_on_chat[receiver] then
-    return 'There aren\'t any disabled plugins for this chat'
+    return edit_msg(msg.to.id, msg.id, 'There aren\'t any disabled plugins for this chat', "md")
   end
 
   if not _config.disabled_plugin_on_chat[receiver][plugin] then
-    return '_This plugin is not disabled_'
+    return edit_msg(msg.to.id, msg.id, '_This plugin is not disabled_', "md")
   end
 
   _config.disabled_plugin_on_chat[receiver][plugin] = false
   save_config()
-  return ' '..plugin..' is enabled again'
+  return edit_msg(msg.to.id, msg.id, ' '..plugin..' is enabled again', "md")
 end
 
 local function run(msg, matches)
   -- Show the available plugins 
   if is_sudo(msg) then
   if matches[1]:lower() == '!plist' or matches[1]:lower() == '/plist' or matches[1]:lower() == '#plist' then --after changed to moderator mode, set only sudo
-    return list_all_plugins()
+    return list_all_plugins(msg, true)
   end
 end
   -- Re-enable a plugin for this chat
@@ -165,7 +165,7 @@ end
     local receiver = msg.chat_id_
     local plugin = matches[3]
     print("enable "..plugin..' on this chat')
-    return reenable_plugin_on_chat(receiver, plugin)
+    return reenable_plugin_on_chat(msg, receiver, plugin)
   end
     end
 
@@ -174,7 +174,7 @@ end
       if is_mod(msg) then
     local plugin_name = matches[3]
     print("enable: "..matches[3])
-    return enable_plugin(plugin_name)
+    return enable_plugin(msg, plugin_name)
   end
     end
   -- Disable a plugin on a chat
@@ -183,16 +183,16 @@ end
     local plugin = matches[3]
     local receiver = msg.chat_id_
     print("disable "..plugin..' on this chat')
-    return disable_plugin_on_chat(receiver, plugin)
+    return disable_plugin_on_chat(msg, receiver, plugin)
   end
     end
   -- Disable a plugin
   if matches[2] == '-' and is_sudo(msg) then --after changed to moderator mode, set only sudo
     if matches[3] == 'plugins' then
-    	return 'This plugin can\'t be disabled'
+    	return edit_msg(msg.to.id, msg.id, 'This plugin can\'t be disabled', "md")
     end
     print("disable: "..matches[3])
-    return disable_plugin(matches[3])
+    return disable_plugin(msg, matches[3])
   end
 end
   -- Reload all the plugins!
@@ -200,7 +200,7 @@ end
     return reload_plugins(true)
   end
   if matches[1]:lower() == 'reload' and is_sudo(msg) then --after changed to moderator mode, set only sudo
-    return reload_plugins(true)
+    return reload_plugins(msg)
   end
 end
 
