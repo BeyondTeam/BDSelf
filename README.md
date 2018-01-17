@@ -58,9 +58,7 @@ Then restart Bot.
 [MAKAN](https://github.com/makanj) ([Telegram](https://telegram.me/MAKAN))
 
 # Special thanks to
-[@MrPars](https://telegram.me/MrPars)
-
-[@MrHalix](https://github.com/MrHalix)
+[@rizaumami](https://github.com/rizaumami)
 
 [@Vysheng](https://github.com/vysheng)
 
