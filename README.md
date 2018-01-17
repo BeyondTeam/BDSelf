@@ -58,13 +58,11 @@ Then restart Bot.
 [MAKAN](https://github.com/makanj) ([Telegram](https://telegram.me/MAKAN))
 
 # Special thanks to
-[@rizaumami](https://github.com/rizaumami)
+[rizaumami](https://github.com/rizaumami) ([Telegram](https://telegram.me/kuncen))
 
 [@Vysheng](https://github.com/vysheng)
 
 [@MrHalix](https://telegram.me/MrHalix)
-
-[@kuncen](https://telegram.me/kuncen)
 
 # Support and development
 
