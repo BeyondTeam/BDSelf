@@ -62,7 +62,7 @@ Then restart Bot.
 
 [@Vysheng](https://github.com/vysheng)
 
-[@MrHalix](https://telegram.me/MAKAN)
+[@MrHalix](https://telegram.me/MrHalix)
 
 [@kuncen](https://telegram.me/kuncen)
 
