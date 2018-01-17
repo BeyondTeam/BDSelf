@@ -20,8 +20,8 @@ Professional Self-Bot Based On NEW TG-CLI
 ```sh
 # Let's install the self-bot.
 cd $HOME
-git clone https://github.com/BeyondTeam/Self-BotV2.git
-cd Self-BotV2
+git clone https://github.com/BeyondTeam/BDSelf.git
+cd BDSelf
 chmod +x beyond.sh
 ./beyond.sh install
 ./beyond.sh # Enter a phone number & confirmation code.
@@ -29,7 +29,7 @@ chmod +x beyond.sh
 ### One command
 To install everything in one command, use:
 ```sh
-cd $HOME && git clone https://github.com/BeyondTeam/Self-BotV2.git && cd Self-BotV2 && chmod +x beyond.sh && ./beyond.sh install && ./beyond.sh
+cd $HOME && git clone https://github.com/BeyondTeam/BDSelf.git && cd BDSelf && chmod +x beyond.sh && ./beyond.sh install && ./beyond.sh
 ```
 
 * * *
@@ -38,11 +38,7 @@ cd $HOME && git clone https://github.com/BeyondTeam/Self-BotV2.git && cd Self-Bo
 
 Open ./bot/bot.lua and add your ID to the "sudo_users" section in the following format:
 ```
-    sudo_users = {
-    157059515,
-    0,
-    YourID
-  }
+    sudo_users = {157059515, YourID}
 ```
 add your ID at line 131 in bot.lua
 Then restart Bot.
