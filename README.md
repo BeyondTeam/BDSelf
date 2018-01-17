@@ -56,7 +56,7 @@ Then restart Bot.
 # Special thanks to
 [rizaumami](https://github.com/rizaumami) ([Telegram](https://telegram.me/kuncen))
 
-[@Vysheng](https://github.com/vysheng)
+[Vysheng](https://github.com/Vysheng) ([Telegram](https://telegram.me/Vysheng))
 
 [@MrHalix](https://telegram.me/MrHalix)
 
