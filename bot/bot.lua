@@ -369,7 +369,7 @@ function tdcli_update_callback (data)
 		local chat = chats[msg.chat_id_]
 		local hash = 'msgs:'..msg.sender_user_id_..':'..msg.chat_id_
 		redis:incr(hash)
-		if redis:get('markread') == 'on' then
+		if redis:get('markread:'..msg.chat_id_) then
 			tdcli.viewMessages(msg.chat_id_, {[0] = msg.id_}, dl_cb, nil)
     end
 		if ((not d) and chat) then
