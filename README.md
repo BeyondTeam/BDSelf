@@ -1,6 +1,6 @@
 # [New BDSelf v1.0](https://telegram.me/BeyondTeam)
 
-*Professional Self-Bot Based On TDBot(telegram-bot)
+*Professional Self-Bot Based On TDBot(telegram-bot)*
 
 
 * * *
@@ -11,7 +11,7 @@
 |:--------|:------------|
 | [#!/]help | just send help in your group and get the commands |
 
-**You can use "#", "!", or "/" to begin all commands
+*You can use "#", "!", or "/" to begin all commands*
 
 * * *
 
