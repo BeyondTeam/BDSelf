@@ -1,6 +1,6 @@
-# [BDSelf v3.0](https://telegram.me/BeyondTeam)
+# [New BDSelf v1.0](https://telegram.me/BeyondTeam)
 
-Professional Self-Bot Based On NEW TG-CLI
+*Professional Self-Bot Based On TDBot(telegram-bot)
 
 
 * * *
@@ -15,37 +15,41 @@ Professional Self-Bot Based On NEW TG-CLI
 
 * * *
 
-# Installation
+## Installation
 
 ```sh
-# Let's install the self-bot.
+# Let's install the bot.
 cd $HOME
-git clone https://github.com/BeyondTeam/BDSelf.git
-cd BDSelf
+git clone https://github.com/BeyondTeam/BDSelf.git -b TDBot
+cd BDReborn
 chmod +x beyond.sh
 ./beyond.sh install
-./beyond.sh # Enter a phone number & confirmation code.
-```
-### One command
-To install everything in one command, use:
-```sh
-cd $HOME && git clone https://github.com/BeyondTeam/BDSelf.git && cd BDSelf && chmod +x beyond.sh && ./beyond.sh install && ./beyond.sh
+./beyond.sh config
+
+# Login Cli Account
+./beyond.sh logcli
+
+# Optional
+# If you do not want to use the tmux, launch your bot with screen. Example: screen ./autobd.sh
+tmux
+
+# Launch Bot
+./beyond.sh bd
+# or
+./autobd.sh
+
+# Delete Config & Login Data
+./beyond.sh reset
 ```
 
 * * *
 
-### Sudo And Bot
-
-Open ./bot/bot.lua and add your ID to the "sudo_users" section in the following format:
-```
-    sudo_users = {157059515, YourID}
-```
-add your ID at line 131 in bot.lua
-Then restart Bot.
+## Sudo ID
+* Input your ID at line 169 in bot.lua and line 2 in tools.lua
 
 * * *
 
-# Developers!
+## Developers!
 
 [SoLiD](https://github.com/solid021) ([Telegram](https://telegram.me/SoLiD))
 
@@ -53,14 +57,15 @@ Then restart Bot.
 
 [MAKAN](https://github.com/makanj) ([Telegram](https://telegram.me/MAKAN))
 
-# Special thanks to
+## Special thanks to
+
 [rizaumami](https://github.com/rizaumami) ([Telegram](https://telegram.me/kuncen))
 
 [Vysheng](https://github.com/Vysheng) ([Telegram](https://telegram.me/Vysheng))
 
 [@MrHalix](https://telegram.me/MrHalix)
 
-# Support and development
+### Support and development
 
 More information [Beyond Development](https://telegram.me/joinchat/AAAAAD9JFZlMveUl8q99gA)
 
