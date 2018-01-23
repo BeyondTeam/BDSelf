@@ -21,7 +21,7 @@
 # Let's install the bot.
 cd $HOME
 git clone https://github.com/BeyondTeam/BDSelf.git -b TDBot
-cd BDReborn
+cd BDSelf
 chmod +x beyond.sh
 ./beyond.sh install
 ./beyond.sh config
@@ -67,7 +67,7 @@ tmux
 
 ### Support and development
 
-More information [Beyond Team Forum Chat](https://telegram.me/joinchat/BqLVv0IDQ8GoX0irFJptog)
+* More information [Beyond Team Forum Chat](https://telegram.me/joinchat/BqLVv0IDQ8GoX0irFJptog)
 
 ### Our Telegram channel:
 
