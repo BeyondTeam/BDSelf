@@ -67,7 +67,7 @@ tmux
 
 ### Support and development
 
-More information [Beyond Development](https://telegram.me/joinchat/AAAAAD9JFZlMveUl8q99gA)
+More information [Beyond Team Forum Chat](https://telegram.me/joinchat/BqLVv0IDQ8GoX0irFJptog)
 
 ### Our Telegram channel:
 
