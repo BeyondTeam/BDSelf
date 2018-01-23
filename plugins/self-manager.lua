@@ -50,7 +50,7 @@ return edit_msg(msg.to.id, msg.id, text, "md")
    end
 end
 
-local function disable_channel(msg, receiver)
+local function disable_channel(msg_id, receiver)
  if not _config.disabled_channels then
   _config.disabled_channels = {}
  end
@@ -58,7 +58,7 @@ local function disable_channel(msg, receiver)
  _config.disabled_channels[receiver] = true
 
  save_config()
- return edit_msg(msg.to.id, msg.id, "*Self Is Off Now :/*", "md")
+ return edit_msg(receiver, msg_id, "*Self Is Off Now :/*", "md")
 end
 
 local function pre_process(msg)
@@ -68,33 +68,33 @@ local hash = 'autoleave'
 
 if not redis:get('autodeltime-self') then
 	redis:setex('autodeltime-self', 14400, true)
-     run_bash("rm -rf ~/.telegram-cli/data/sticker/*")
-     run_bash("rm -rf ~/.telegram-cli/data/photo/*")
-     run_bash("rm -rf ~/.telegram-cli/data/animation/*")
-     run_bash("rm -rf ~/.telegram-cli/data/video/*")
-     run_bash("rm -rf ~/.telegram-cli/data/audio/*")
-     run_bash("rm -rf ~/.telegram-cli/data/voice/*")
-     run_bash("rm -rf ~/.telegram-cli/data/temp/*")
-     run_bash("rm -rf ~/.telegram-cli/data/thumb/*")
-     run_bash("rm -rf ~/.telegram-cli/data/document/*")
-     run_bash("rm -rf ~/.telegram-cli/data/profile_photo/*")
-     run_bash("rm -rf ~/.telegram-cli/data/encrypted/*")
+     run_bash("rm -rf ~/.telegram-bot/cli/data/stickers/*")
+     run_bash("rm -rf ~/.telegram-bot/cli/files/photos/*")
+     run_bash("rm -rf ~/.telegram-bot/cli/files/animations/*")
+     run_bash("rm -rf ~/.telegram-bot/cli/files/videos/*")
+     run_bash("rm -rf ~/.telegram-bot/cli/files/music/*")
+     run_bash("rm -rf ~/.telegram-bot/cli/files/voice/*")
+     run_bash("rm -rf ~/.telegram-bot/cli/files/temp/*")
+     run_bash("rm -rf ~/.telegram-bot/cli/data/temp/*")
+     run_bash("rm -rf ~/.telegram-bot/cli/files/documents/*")
+     run_bash("rm -rf ~/.telegram-bot/cli/data/profile_photos/*")
+     run_bash("rm -rf ~/.telegram-bot/cli/files/video_notes/*")
 	 run_bash("rm -rf ./data/photos/*")
 end
 
-  if msg.from.id then
-    local hash = 'user:'..msg.from.id
+  if tonumber(msg.from.id) ~= 0 then
+    local hash = 'user_name:'..msg.from.id
     if msg.from.username then
      user_name = '@'..msg.from.username
   else
      user_name = msg.from.print_name
     end
-      redis:hset(hash, 'user_name', user_name)
-  end
+      redis:set(hash, user_name)
+   end
 
 if msg.adduser and tonumber(msg.adduser) == tonumber(our_id) and not redis:get(hash) then
- tdcli.sendMessage(msg.to.id, "", 0, "_Don't invite me_ *JackAss :/*", 0, "md")
-  tdcli.changeChatMemberStatus(msg.to.id, our_id, 'Left', dl_cb, nil)
+ tdbot.sendMessage(msg.to.id, "", 0, "_Don't invite me_ *JackAss :/*", 0, "md")
+  tdbot.changeChatMemberStatus(msg.to.id, our_id, 'Left', dl_cb, nil)
 end
 
     local hash = 'flood_max'
@@ -132,9 +132,9 @@ end
 if redis:get('user:'..user_id..':flooder') then
 return
 else
-  tdcli.sendMessage(chat_id, msg.id, 0, "_You are_ *blocked* _because of_ *flooding...!*", 0, "md")
-    tdcli.blockUser(user_id, dl_cb, nil)
-   tdcli.sendMessage(our_id, 0, 1, 'User [ '..user_name..' ] '..msg.from.id..' has been blocked because of flooding!', 1)
+  tdbot.sendMessage(chat_id, msg.id, 0, "_You are_ *blocked* _because of_ *flooding...!*", 0, "md")
+    tdbot.blockUser(user_id, dl_cb, nil)
+   tdbot.sendMessage(our_id, 0, 1, 'User [ '..user_name..' ] '..msg.from.id..' has been blocked because of flooding!', 1)
 redis:setex('user:'..user_id..':flooder', 15, true)
 redis:srem(flooder, user_id)
                         end
@@ -143,7 +143,7 @@ redis:srem(flooder, user_id)
 if redis:get('user:'..user_id..':flooder') then
 return
 else
-  tdcli.sendMessage(chat_id, msg.id, 0, "_Don't_ *flooding*, _Next time you will be_ *block...!*", 0, "md")
+  tdbot.sendMessage(chat_id, msg.id, 0, "_Don't_ *flooding*, _Next time you will be_ *block...!*", 0, "md")
 redis:setex('user:'..user_id..':flooder', 2, true)
 redis:sadd(flooder, user_id)
                           end
@@ -170,7 +170,7 @@ local receiver = msg.to.id
   return enable_channel(receiver)
  end
  if matches[1] == 'off' then
-  return disable_channel(msg, receiver)
+  return disable_channel(msg.id, receiver)
  end
 -----------------------
      if matches[1] == 'autoleave' and is_sudo(msg) then
@@ -248,24 +248,6 @@ _Show Group Id_
 *!tosuper*
 _Change Chat To Channel_
 
-*!chatlist*
-_Show Name List_
-
-*!chat + name answer*
-_Set Chat Name And Answer_
-
-*!chat - name*
-_Disabeled Chatting in Group_
-
-*!chat clean*
-_Clean Name And Answers_
-
-*!delmy*`[name | username]`
-_Delete Name Or Username_
-
-*!markread* `[on | off]`
-_Change Markread Status_
-
 *!autoleave* `[on | off]`
 _Set Auto Leave Status_
 
@@ -293,6 +275,12 @@ _Invite User To Group_
 *!kick* `[id | username | reply]`
 _Kick User From Group_
 
+*!silent* `[id | username | reply]`
+_Add User To Silent List_
+
+*!unsilent* `[id | username | reply]`
+_Remove User From Silent List_
+
 *!delall* `[id | username | reply]`
 _Delete All Messages Of User_
 
@@ -304,21 +292,6 @@ _UnMute Group_
 
 *!set*`[name | des | link]`
 _Set Group Name , Description , Link_
-
-*!addplugin* _text_ `name.lua`
-_Create Your Own Plugin_
-
-*!delplugin* `name`
-_Delete Plugin_
-
-*!setmy*`[name | username]` *(name|username)*
-_Set Your Name or Your Username_
-
-*!addcontact* `[phone | firstname | lastname]`
-_Added A New Contact_
-
-*!delcontact* `[phone]`
-_Delete Contact_
 
 *!addname* `[name]`
 _Add New Name To Name List_
@@ -338,42 +311,27 @@ _Show Names List_
 *!answerlist*
 _Show Answers List_
 
+*!silentlist*
+_Show Silent List_
+
+*!clean silentlist*
+_Clean Silent List_
+
 *!pvsetflood* `[msgs]`
 _Tet The Maximum Messages In A Floodtime To Be Considered As Flood_
 
 *!pvfloodtime* `[secs]`
 _Set The Time That Bot Uses To Check Flood_
 
-*!block* `[reply | id | username]`
-_Block User_
-
-*!unblock* `[reply | id | username]`
-_UnBlock User_
-
-*!sendfile* `[folder] [file]`
-_Send file from folder_
-
-*!sendplug* `[plug]`
-_Send plugin_
-
-*!save* `[plugin name] [reply]`
-_Save plugin by reply_
-
-*!savefile* `[adress/filename] [reply]`
-_Save File by reply to specific folder_
-
-*!edit* `[text] [reply]`
-_Edit Your meesage by reply to specific message_
-
-*!clear cache*
-_Clear All Cache Of .telegram-cli/data_
-
 *!helpfun*
 _Show Fun Help_
 
+*!helptools*
+_Show Tools Help_
+
 *Good Luck ;)*]]
 
-tdcli.sendMessage(msg.sender_user_id_, "", 0, text, 0, "md")
+tdbot.sendMessage(msg.from.id, "", 0, text, 0, "md")
             return edit_msg(msg.to.id, msg.id, '_Help was send in your private message_', "md")
 end
 end

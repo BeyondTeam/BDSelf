@@ -130,14 +130,14 @@ local text = answer[math.random(#answer)]
       local answer = matches[2]
       return rem_answer(msg, answer)
          elseif matches[1]:lower() == 'namelist' and is_sudo(msg) then
-  return tdcli.sendMessage(msg.to.id, msg.id, 0, namelist(msg), 0, "md")
+  return namelist(msg)
          elseif matches[1]:lower() == 'answerlist' and is_sudo(msg) then
-  return tdcli.sendMessage(msg.to.id, msg.id, 0, answerlist(msg), 0, "md")
+  return answerlist(msg)
     end
 if self_names(matches[1]) then
  local chat = tostring(msg.to.id)
     if not is_sudo(msg) then
-  return tdcli.sendMessage(msg.to.id, msg.id, 0, text, 0, "md")
+  return text
       end
    end 
 end

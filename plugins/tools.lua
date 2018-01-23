@@ -47,7 +47,7 @@ end
 
 local function exi_file()
     local files = {}
-    local pth = tcpath..'/data/document'
+    local pth = tcpath..'/data/documents'
     for k, v in pairs(scandir(pth)) do
         if (v:match('.lua$')) then
             table.insert(files, v)
@@ -86,94 +86,117 @@ end
 local function action_by_reply(arg, data)
    local msg = arg.msg
    local cmd = arg.cmd
-  if data.sender_user_id_ then
+  if data.sender_user_id then
     if cmd == "visudo" then
 local function visudo_cb(arg, data)
-if data.username_ then
-user_name = '@'..check_markdown(data.username_)
+if data.username then
+user_name = '@'..check_markdown(data.username)
 else
-user_name = check_markdown(data.first_name_)
+user_name = check_markdown(data.first_name)
 end
-if already_sudo(tonumber(data.id_)) then
-    return edit_msg(arg.chat_id, msg.id, "_User_ "..user_name.." *"..data.id_.."* _is already a_ *sudoer*", "md")
+if already_sudo(tonumber(data.id)) then
+    return edit_msg(arg.chat_id, msg.id, "_User_ "..user_name.." *"..data.id.."* _is already a_ *sudoer*", "md")
    end
-          table.insert(_config.sudo_users, tonumber(data.id_))
+          table.insert(_config.sudo_users, tonumber(data.id))
 		save_config()
      reload_plugins(true)
-    return edit_msg(arg.chat_id, msg.id, "_User_ "..user_name.." *"..data.id_.."* _is now_ *sudoer*", "md")
+    return edit_msg(arg.chat_id, msg.id, "_User_ "..user_name.." *"..data.id.."* _is now_ *sudoer*", "md")
 end
-tdcli_function ({
-    ID = "GetUser",
-    user_id_ = data.sender_user_id_
-  }, visudo_cb, {chat_id=data.chat_id_,user_id=data.sender_user_id_})
+tdbot_function ({
+    _ = "getUser",
+    user_id = data.sender_user_id
+  }, visudo_cb, {chat_id=data.chat_id,user_id=data.sender_user_id})
   end
     if cmd == "desudo" then
 local function desudo_cb(arg, data)
-if data.username_ then
-user_name = '@'..check_markdown(data.username_)
+if data.username then
+user_name = '@'..check_markdown(data.username)
 else
-user_name = check_markdown(data.first_name_)
+user_name = check_markdown(data.first_name)
 end
-     if not already_sudo(data.id_) then
-    return edit_msg(arg.chat_id, msg.id, "_User_ "..user_name.." *"..data.id_.."* _is not a_ *sudoer*", "md")
+     if not already_sudo(data.id) then
+    return edit_msg(arg.chat_id, msg.id, "_User_ "..user_name.." *"..data.id.."* _is not a_ *sudoer*", "md")
    end
-          table.remove(_config.sudo_users, getindex( _config.sudo_users, tonumber(data.id_)))
+          table.remove(_config.sudo_users, getindex( _config.sudo_users, tonumber(data.id)))
 		save_config()
      reload_plugins(true) 
-    return edit_msg(arg.chat_id, msg.id, "_User_ "..user_name.." *"..data.id_.."* _is no longer a_ *sudoer*", "md")
+    return edit_msg(arg.chat_id, msg.id, "_User_ "..user_name.." *"..data.id.."* _is no longer a_ *sudoer*", "md")
 end
-tdcli_function ({
-    ID = "GetUser",
-    user_id_ = data.sender_user_id_
-  }, desudo_cb, {chat_id=data.chat_id_,user_id=data.sender_user_id_})
+tdbot_function ({
+    _ = "getUser",
+    user_id = data.sender_user_id
+  }, desudo_cb, {chat_id=data.chat_id,user_id=data.sender_user_id})
   end
    if cmd == "block" then
-   tdcli.blockUser(data.sender_user_id_, dl_cb, nil)
-    edit_msg(data.chat_id_, msg.id, "_User_ *"..data.sender_user_id_.."* _Has Been_ *Blocked*", "md")
+   tdbot.blockUser(data.sender_user_id, dl_cb, nil)
+    edit_msg(data.chat_id, msg.id, "_User_ *"..data.sender_user_id.."* _Has Been_ *Blocked*", "md")
    end
    if cmd == "unblock" then
-   tdcli.unblockUser(data.sender_user_id_, dl_cb, nil)
-    edit_msg(data.chat_id_, msg.id, "_User_ *"..data.sender_user_id_.."* _Has Been_ *Unblocked*", "md")
+   tdbot.unblockUser(data.sender_user_id, dl_cb, nil)
+    edit_msg(data.chat_id, msg.id, "_User_ *"..data.sender_user_id.."* _Has Been_ *Unblocked*", "md")
    end
 else
-  return edit_msg(data.chat_id_, msg.id, "*User not founded*", "md")
+  return edit_msg(data.chat_id, msg.id, "*User not founded*", "md")
      end
   end
 
 local function action_by_username(arg, data)
    local cmd = arg.cmd
    local msg = arg.msg
-  if data.id_ then
+  if data.id then
     if cmd == "visudo" then
-if already_sudo(tonumber(data.id_)) then
-    return edit_msg(arg.chat_id, msg.id, "_User_ "..user_name.." *"..data.id_.."* _is already a_ *sudoer*", "md")
-   end
-          table.insert(_config.sudo_users, tonumber(data.id_))
-		save_config()
-     reload_plugins(true)
-    return edit_msg(arg.chat_id, msg.id, "_User_ "..user_name.." *"..data.id_.."* _is now_ *sudoer*", "md")
+local function visudo_cb(arg, data)
+if data.username then
+user_name = '@'..check_markdown(data.username)
+else
+user_name = check_markdown(data.first_name)
 end
-    if cmd == "desudo" then
-     if not already_sudo(data.id_) then
-    return edit_msg(arg.chat_id, msg.id, "_User_ "..user_name.." *"..data.id_.."* _is not a_ *sudoer*", "md")
+if already_sudo(tonumber(data.id)) then
+    return edit_msg(arg.chat_id, msg.id, "_User_ "..user_name.." *"..data.id.."* _is already a_ *sudoer*", "md")
    end
-          table.remove(_config.sudo_users, getindex( _config.sudo_users, tonumber(data.id_)))
+          table.insert(_config.sudo_users, tonumber(data.id))
 		save_config()
      reload_plugins(true)
-    return edit_msg(arg.chat_id, msg.id, "_User_ "..user_name.." *"..data.id_.."* _is no longer a_ *sudoer*", "md")
+    return edit_msg(arg.chat_id, msg.id, "_User_ "..user_name.." *"..data.id.."* _is now_ *sudoer*", "md")
+end
+tdbot_function ({
+    _ = "getUser",
+    user_id = data.id
+  }, visudo_cb, {chat_id=arg.chat_id,user_id=data.id})
+  end
+    if cmd == "desudo" then
+local function desudo_cb(arg, data)
+if data.username then
+user_name = '@'..check_markdown(data.username)
+else
+user_name = check_markdown(data.first_name)
+end
+     if not already_sudo(data.id) then
+    return edit_msg(arg.chat_id, msg.id, "_User_ "..user_name.." *"..data.id.."* _is not a_ *sudoer*", "md")
    end
+          table.remove(_config.sudo_users, getindex( _config.sudo_users, tonumber(data.id)))
+		save_config()
+     reload_plugins(true) 
+    return edit_msg(arg.chat_id, msg.id, "_User_ "..user_name.." *"..data.id.."* _is no longer a_ *sudoer*", "md")
+end
+tdbot_function ({
+    _ = "getUser",
+    user_id = data.id
+  }, desudo_cb, {chat_id=arg.chat_id,user_id=data.id})
+  end
    if cmd == "block" then
-   tdcli.blockUser(data.id_, dl_cb, nil)
-    edit_msg(arg.chat_id, msg.id, "_User_ *"..data.id_.."* _Has Been_ *Blocked*", "md")
+   tdbot.blockUser(data.id, dl_cb, nil)
+    edit_msg(arg.chat_id, msg.id, "_User_ *"..data.id.."* _Has Been_ *Blocked*", "md")
    end
    if cmd == "unblock" then
-   tdcli.unblockUser(data.id_, dl_cb, nil)
-     edit_msg(arg.chat_id, msg.id, "_User_ *"..data.id_.."* _Has Been_ *Unblocked*", "md")
+   tdbot.unblockUser(data.id, dl_cb, nil)
+    edit_msg(data.chat_id, msg.id, "_User_ *"..data.id.."* _Has Been_ *Unblocked*", "md")
    end
 else
-  return edit_msg(arg.chat_id, msg.id, "*User not founded*", "md")
+  return edit_msg(data.chat_id, msg.id, "*User not founded*", "md")
      end
   end
+
 local function get_variables_hash(msg)
   if msg.to.type == 'chat' or msg.to.type == 'channel' then
     return 'chat:bot:variables'
@@ -254,27 +277,89 @@ end
 local function run(msg, matches)
    local chat = msg.to.id
    local user = msg.from.id
+if matches[1] == 'helptools' and is_sudo(msg) then
+
+local text = [[
+*Tool Commands:*
+
+*!chatlist*
+_Show Name List_
+
+*!chat + name answer*
+_Set Chat Name And Answer_
+
+*!chat - name*
+_Disabeled Chatting in Group_
+
+*!chat clean*
+_Clean Name And Answers_
+
+*!delmy*`[name | username]`
+_Delete Name Or Username_
+
+*!markread* `[on | off]`
+_Change Markread Status_
+
+*!addplugin* _text_ `name.lua`
+_Create Your Own Plugin_
+
+*!delplugin* `name`
+_Delete Plugin_
+
+*!setmy*`[name | username]` *(name|username)*
+_Set Your Name or Your Username_
+
+*!addcontact* `[phone | firstname | lastname]`
+_Added A New Contact_
+
+*!delcontact* `[phone]`
+_Delete Contact_
+
+*!block* `[reply | id | username]`
+_Block User_
+
+*!unblock* `[reply | id | username]`
+_UnBlock User_
+
+*!sendfile* `[folder] [file]`
+_Send file from folder_
+
+*!sendplug* `[plug]`
+_Send plugin_
+
+*!save* `[plugin name] [reply]`
+_Save plugin by reply_
+
+*!savefile* `[adress/filename] [reply]`
+_Save File by reply to specific folder_
+
+*Good Luck ;)*]]
+
+tdbot.sendMessage(msg.from.id, "", 0, text, 0, "md")
+            return edit_msg(msg.to.id, msg.id, '_Tools Help was send in your private message_', "md")
+end
 if matches[1] == "clear cache" and tonumber(msg.from.id) == our_id then
-     run_bash("rm -rf ~/.telegram-cli/data/sticker/*")
-     run_bash("rm -rf ~/.telegram-cli/data/photo/*")
-     run_bash("rm -rf ~/.telegram-cli/data/animation/*")
-     run_bash("rm -rf ~/.telegram-cli/data/video/*")
-     run_bash("rm -rf ~/.telegram-cli/data/audio/*")
-     run_bash("rm -rf ~/.telegram-cli/data/voice/*")
-     run_bash("rm -rf ~/.telegram-cli/data/temp/*")
-     run_bash("rm -rf ~/.telegram-cli/data/thumb/*")
-     run_bash("rm -rf ~/.telegram-cli/data/document/*")
-     run_bash("rm -rf ~/.telegram-cli/data/profile_photo/*")
-     run_bash("rm -rf ~/.telegram-cli/data/encrypted/*")
+     run_bash("rm -rf ~/.telegram-bot/cli/data/stickers/*")
+     run_bash("rm -rf ~/.telegram-bot/cli/files/photos/*")
+     run_bash("rm -rf ~/.telegram-bot/cli/files/animations/*")
+     run_bash("rm -rf ~/.telegram-bot/cli/files/videos/*")
+     run_bash("rm -rf ~/.telegram-bot/cli/files/music/*")
+     run_bash("rm -rf ~/.telegram-bot/cli/files/voice/*")
+     run_bash("rm -rf ~/.telegram-bot/cli/files/temp/*")
+     run_bash("rm -rf ~/.telegram-bot/cli/data/temp/*")
+     run_bash("rm -rf ~/.telegram-bot/cli/files/documents/*")
+     run_bash("rm -rf ~/.telegram-bot/cli/data/profile_photos/*")
+     run_bash("rm -rf ~/.telegram-bot/cli/files/video_notes/*")
+	 run_bash("rm -rf ./data/photos/*")
     return edit_msg(msg.to.id, msg.id, "*All Cache Has Been Cleared*", "md")
    end
    if tonumber(msg.from.id) == tonumber(our_id) then
  if matches[1] == "visudo" then
 if not matches[2] and msg.reply_id then
-    tdcli_function ({
-      ID = "GetMessage",
-      chat_id_ = msg.to.id,
-      message_id_ = msg.reply_id
+    tdbot_function ({
+      _ = "getMessage",
+      chat_id = msg.to.id,
+      message_id = msg.reply_id
     }, action_by_reply, {chat_id=msg.to.id,cmd="visudo",msg=msg})
 end
   if matches[2] and string.match(matches[2], '^%d+$') and not msg.reply_id then
@@ -287,18 +372,18 @@ if already_sudo(tonumber(matches[2])) then
     return edit_msg(msg.to.id, msg.id, "_User_ *"..matches[2].."* _is now_ *sudoer*", "md")
    end
   if matches[2] and not string.match(matches[2], '^%d+$') and not msg.reply_id then
-    tdcli_function ({
-      ID = "SearchPublicChat",
-      username_ = matches[2]
+    tdbot_function ({
+      _ = "searchPublicChat",
+      username = matches[2]
     }, action_by_username, {chat_id=msg.to.id,username=matches[2],cmd="visudo",msg=msg})
          end
       end
  if matches[1] == "desudo" then
 if not matches[2] and msg.reply_id then
-    tdcli_function ({
-      ID = "GetMessage",
-      chat_id_ = msg.to.id,
-      message_id_ = msg.reply_id
+    tdbot_function ({
+      _ = "getMessage",
+      chat_id = msg.to.id,
+      message_id = msg.reply_id
     }, action_by_reply, {chat_id=msg.to.id,cmd="desudo",msg=msg})
 end
   if matches[2] and string.match(matches[2], '^%d+$') and not msg.reply_id then
@@ -311,48 +396,48 @@ end
     return edit_msg(msg.to.id, msg.id, "_User_ *"..matches[2].."* _is no longer a_ *sudoer*", "md")
    end
   if matches[2] and not string.match(matches[2], '^%d+$') and not msg.reply_id then
-    tdcli_function ({
-      ID = "SearchPublicChat",
-      username_ = matches[2]
+    tdbot_function ({
+      _ = "searchPublicChat",
+      username = matches[2]
     }, action_by_username, {chat_id=msg.to.id,username=matches[2],cmd="desudo",msg=msg})
          end
       end
    end
  if matches[1] == "block" and is_sudo(msg) then
 if not matches[2] and msg.reply_id then
-    tdcli_function ({
-      ID = "GetMessage",
-      chat_id_ = msg.to.id,
-      message_id_ = msg.reply_id
+    tdbot_function ({
+      _ = "getMessage",
+      chat_id = msg.to.id,
+      message_id = msg.reply_id
     }, action_by_reply, {chat_id=msg.to.id,cmd="block",msg=msg})
 end
   if matches[2] and string.match(matches[2], '^%d+$') and not msg.reply_id then
-   tdcli.blockUser(matches[2], dl_cb, nil)
+   tdbot.blockUser(matches[2], dl_cb, nil)
   return edit_msg(msg.to.id, msg.id, "_User_ *"..matches[2].."* _Has Been_ *Blocked*", "md")
    end
   if matches[2] and not string.match(matches[2], '^%d+$') and not msg.reply_id then
-    tdcli_function ({
-      ID = "SearchPublicChat",
-      username_ = matches[2]
+    tdbot_function ({
+      _ = "searchPublicChat",
+      username = matches[2]
     }, action_by_username, {chat_id=msg.to.id,username=matches[2],cmd="block",msg=msg})
          end
       end
  if matches[1] == "unblock" and is_sudo(msg) then
 if not matches[2] and msg.reply_id then
-    tdcli_function ({
-      ID = "GetMessage",
-      chat_id_ = msg.to.id,
-      message_id_ = msg.reply_id
+    tdbot_function ({
+      _ = "getMessage",
+      chat_id = msg.to.id,
+      message_id = msg.reply_id
     }, action_by_reply, {chat_id=msg.to.id,cmd="unblock",msg=msg})
 end
   if matches[2] and string.match(matches[2], '^%d+$') and not msg.reply_id then
-   tdcli.unblockUser(matches[2], dl_cb, nil)
+   tdbot.unblockUser(matches[2], dl_cb, nil)
   return edit_msg(msg.to.id, msg.id, "_User_ *"..matches[2].."* _Has Been_ *Unblocked*", "md")
    end
   if matches[2] and not string.match(matches[2], '^%d+$') and not msg.reply_id then
-    tdcli_function ({
-      ID = "SearchPublicChat",
-      username_ = matches[2]
+    tdbot_function ({
+      _ = "searchPublicChat",
+      username = matches[2]
     }, action_by_username, {chat_id=msg.to.id,username=matches[2],cmd="unblock",msg=msg})
          end
       end
@@ -382,53 +467,44 @@ end
 matches[3] then
 		local send_file = 
 "./"..matches[2].."/"..matches[3]
-   if msg.to.type == "channel" then
     del_msg(msg.to.id, msg.id)
-       else
-     edit_msg(msg.to.id, msg.id, "😐", "md")
-   end
-		tdcli.sendDocument(msg.chat_id_, msg.id_,0, 
-1, nil, send_file, '@BeyondTeam', dl_cb, nil)
+tdbot.sendDocument(msg.to.id, send_file, "@BeyondTeam", nil, msg.id, 0, 1, nil, dl_cb, nil)
 	end
 	if matches[1]:lower() == "sendplug" and matches[2] then
 	    local plug = "./plugins/"..matches[2]..".lua"
-   if msg.to.type == "channel" then
     del_msg(msg.to.id, msg.id)
-       else
-     edit_msg(msg.to.id, msg.id, "😐", "md")
-   end
-		tdcli.sendDocument(msg.chat_id_, msg.id_,0, 
-1, nil, plug, '@BeyondTeam', dl_cb, nil)
+    tdbot.sendDocument(msg.to.id, plug, "@BeyondTeam", nil, msg.id, 0, 1, nil, dl_cb, nil)
     end
   end
 
     if matches[1]:lower() == 'save' and matches[2] and is_sudo(msg) then
-        if tonumber(msg.reply_to_message_id_) ~= 0  then
+        if tonumber(msg.reply_to_message_id) ~= 0  then
             function get_filemsg(arg, data)
                 function get_fileinfo(arg,data)
-                    if data.content_.ID == 'MessageDocument' then
-                        fileid = data.content_.document_.document_.id_
-                        filename = data.content_.document_.file_name_
+                    if data.content._ == 'messageDocument' then
+                        fileid = data.content.document.document.id
+                        filename = data.content.document.file_name
+						file_dl(document_id)
+						sleep(1)
                         if (filename:lower():match('.lua$')) then
-                            local pathf = tcpath..'/data/document/'..filename
+                            local pathf = tcpath..'/files/documents/'..filename
                             if pl_exi(filename) then
                                 local pfile = 'plugins/'..matches[2]..'.lua'
                                 os.rename(pathf, pfile)
-                                tdcli.downloadFile(fileid , dl_cb, nil)
-                                edit_msg(msg.to.id, msg.id_, '<b>Plugin</b> <code>'..matches[2]..'</code> <b>Has Been Saved.</b>', 'html')
+								edit_msg(msg.to.id, msg.id, '<b>Plugin</b> <code>'..matches[2]..'</code> <b>Has Been Saved.</b>', 'html')
                             else
-                                edit_msg(msg.to.id, msg.id_, '_This file does not exist. Send file again._', 'md')
+                                edit_msg(msg.to.id, msg.id, '_This file does not exist. Send file again._', 'md')
                             end
                         else
-                            edit_msg(msg.to.id, msg.id_, '_This file is not Plugin File._', 'md')
+                            edit_msg(msg.to.id, msg.id, '_This file is not Plugin File._', 'md')
                         end
                     else
                         return
                     end
                 end
-                tdcli_function ({ ID = 'GetMessage', chat_id_ = msg.chat_id_, message_id_ = data.id_ }, get_fileinfo, nil)
+                tdbot_function ({ _ = 'getMessage', chat_id = msg.chat_id, message_id = data.id }, get_fileinfo, nil)
             end
-	        tdcli_function ({ ID = 'GetMessage', chat_id_ = msg.chat_id_, message_id_ = msg.reply_to_message_id_ }, get_filemsg, nil)
+	        tdbot_function ({ _ = 'getMessage', chat_id = msg.chat_id, message_id = msg.reply_to_message_id }, get_filemsg, nil)
         end
     end
 
@@ -437,39 +513,39 @@ matches[3] then
 			local folder = matches[2]
             function get_filemsg(arg, data)
 				function get_fileinfo(arg,data)
-                    if data.content_.ID == 'MessageDocument' or data.content_.ID == 'MessagePhoto' or data.content_.ID == 'MessageSticker' or data.content_.ID == 'MessageAudio' or data.content_.ID == 'MessageVoice' or data.content_.ID == 'MessageVideo' or data.content_.ID == 'MessageAnimation' then
-                        if data.content_.ID == 'MessageDocument' then
-							local doc_id = data.content_.document_.document_.id_
-							local filename = data.content_.document_.file_name_
-                            local pathf = tcpath..'/data/document/'..filename
-							local cpath = tcpath..'/data/document'
+                    if data.content._ == 'messageDocument' or data.content._ == 'messagePhoto' or data.content._ == 'messageSticker' or data.content._ == 'messageAudio' or data.content._ == 'messageVoice' or data.content._ == 'messageVideo' or data.content._ == 'messageAnimation' then
+                        if data.content._ == 'messageDocument' then
+							local doc_id = data.content.document.document.id
+							local filename = data.content.document.file_name
+                            local pathf = tcpath..'/files/documents/'..filename
+							local cpath = tcpath..'/files/documents'
                             if file_exi(filename, cpath) then
                                 local pfile = folder
                                 os.rename(pathf, pfile)
                                 file_dl(doc_id)
-                                edit_msg(msg.to.id, msg.id_, '<b>File</b> <code>'..folder..'</code> <b>Has Been Saved.</b>', 'html')
+									edit_msg(msg.to.id, msg.id, '<b>File</b> <code>'..folder..'</code> <b>Has Been Saved.</b>', 'html')
                             else
-                                edit_msg(msg.to.id, msg.id_, '_This file does not exist. Send file again._', 'md')
+									edit_msg(msg.to.id, msg.id, '_This file does not exist. Send file again._', 'md')
                             end
 						end
-						if data.content_.ID == 'MessagePhoto' then
-							local photo_id = data.content_.photo_.sizes_[2].photo_.id_
-							local file = data.content_.photo_.id_
-                            local pathf = tcpath..'/data/photo/'..file..'_(1).jpg'
-							local cpath = tcpath..'/data/photo'
-                            if file_exi(file..'_(1).jpg', cpath) then
+						if data.content._ == 'messagePhoto' then
+							local photo_id = data.content.photo.sizes[2].photo.id
+							local file = data.content.photo.id
+                            local pathf = tcpath..'/files/photos/'..file..'.jpg'
+							local cpath = tcpath..'/files/photos'
+                            if file_exi(file..'.jpg', cpath) then
                                 local pfile = folder
                                 os.rename(pathf, pfile)
                                 file_dl(photo_id)
-                                edit_msg(msg.to.id, msg.id_, '<b>Photo</b> <code>'..folder..'</code> <b>Has Been Saved.</b>', 'html')
+									edit_msg(msg.to.id, msg.id, '<b>Photo</b> <code>'..folder..'</code> <b>Has Been Saved.</b>', 'html')
                             else
-                                edit_msg(msg.to.id, msg.id_, '_This file does not exist. Send file again._', 'md')
+									edit_msg(msg.to.id, msg.id, '_This file does not exist. Send file again._', 'md')
                             end
 						end
-		                if data.content_.ID == 'MessageSticker' then
-							local stpath = data.content_.sticker_.sticker_.path_
-							local sticker_id = data.content_.sticker_.sticker_.id_
-							local secp = tostring(tcpath)..'/data/sticker/'
+		                if data.content._ == 'messageSticker' then
+							local stpath = data.content.sticker.sticker.path
+							local sticker_id = data.content.sticker.sticker.id
+							local secp = tostring(tcpath)..'/data/stickers/'
 							local ffile = string.gsub(stpath, '-', '')
 							local fsecp = string.gsub(secp, '-', '')
 							local name = string.gsub(ffile, fsecp, '')
@@ -477,29 +553,29 @@ matches[3] then
                                 local pfile = folder
                                 os.rename(stpath, pfile)
                                 file_dl(sticker_id)
-                                edit_msg(msg.to.id, msg.id_, '<b>Sticker</b> <code>'..folder..'</code> <b>Has Been Saved.</b>', 'html')
+									edit_msg(msg.to.id, msg.id, '<b>Sticker</b> <code>'..folder..'</code> <b>Has Been Saved.</b>', 'html')
                             else
-                                edit_msg(msg.to.id, msg.id_, '_This file does not exist. Send file again._', 'md')
+									edit_msg(msg.to.id, msg.id, '_This file does not exist. Send file again._', 'md')
                             end
 						end
-						if data.content_.ID == 'MessageAudio' then
-						local audio_id = data.content_.audio_.audio_.id_
-						local audio_name = data.content_.audio_.file_name_
-                        local pathf = tcpath..'/data/audio/'..audio_name
-						local cpath = tcpath..'/data/audio'
+						if data.content._ == 'messageAudio' then
+						local audio_id = data.content.audio.audio.id
+						local audio_name = data.content.audio.file_name
+                        local pathf = tcpath..'/files/music/'..audio_name
+						local cpath = tcpath..'/files/music'
 							if file_exi(audio_name, cpath) then
 								local pfile = folder
 								os.rename(pathf, pfile)
 								file_dl(audio_id)
-								edit_msg(msg.to.id, msg.id_, '<b>Audio</b> <code>'..folder..'</code> <b>Has Been Saved.</b>', 'html')
-							else
-								edit_msg(msg.to.id, msg.id_, '_This file does not exist. Send file again._', 'md')
+									edit_msg(msg.to.id, msg.id, '<b>Audio</b> <code>'..folder..'</code> <b>Has Been Saved.</b>', 'html')
+                            else
+									edit_msg(msg.to.id, msg.id, '_This file does not exist. Send file again._', 'md')
 							end
 						end
-						if data.content_.ID == 'MessageVoice' then
-							local voice_id = data.content_.voice_.voice_.id_
-							local file = data.content_.voice_.voice_.path_
-							local secp = tostring(tcpath)..'/data/voice/'
+						if data.content._ == 'messageVoice' then
+							local voice_id = data.content.voice.voice.id
+							local file = data.content.voice.voice.path
+							local secp = tostring(tcpath)..'/files/voice/'
 							local ffile = string.gsub(file, '-', '')
 							local fsecp = string.gsub(secp, '-', '')
 							local name = string.gsub(ffile, fsecp, '')
@@ -507,15 +583,15 @@ matches[3] then
                                 local pfile = folder
                                 os.rename(file, pfile)
                                 file_dl(voice_id)
-                                edit_msg(msg.to.id, msg.id_, '<b>Voice</b> <code>'..folder..'</code> <b>Has Been Saved.</b>', 'html')
+									edit_msg(msg.to.id, msg.id, '<b>Voice</b> <code>'..folder..'</code> <b>Has Been Saved.</b>', 'html')
                             else
-                                edit_msg(msg.to.id, msg.id_, '_This file does not exist. Send file again._', 'md')
+									edit_msg(msg.to.id, msg.id, '_This file does not exist. Send file again._', 'md')
                             end
 						end
-						if data.content_.ID == 'MessageVideo' then
-							local video_id = data.content_.video_.video_.id_
-							local file = data.content_.video_.video_.path_
-							local secp = tostring(tcpath)..'/data/video/'
+						if data.content._ == 'messageVideo' then
+							local video_id = data.content.video.video.id
+							local file = data.content.video.video.path
+							local secp = tostring(tcpath)..'/files/videos/'
 							local ffile = string.gsub(file, '-', '')
 							local fsecp = string.gsub(secp, '-', '')
 							local name = string.gsub(ffile, fsecp, '')
@@ -523,32 +599,32 @@ matches[3] then
                                 local pfile = folder
                                 os.rename(file, pfile)
                                 file_dl(video_id)
-                                edit_msg(msg.to.id, msg.id_, '<b>Video</b> <code>'..folder..'</code> <b>Has Been Saved.</b>', 'html')
+									edit_msg(msg.to.id, msg.id, '<b>Video</b> <code>'..folder..'</code> <b>Has Been Saved.</b>', 'html')
                             else
-                                edit_msg(msg.to.id, msg.id_, '_This file does not exist. Send file again._', 'md')
+									edit_msg(msg.to.id, msg.id, '_This file does not exist. Send file again._', 'md')
                             end
 						end
-						if data.content_.ID == 'MessageAnimation' then
-							local anim_id = data.content_.animation_.animation_.id_
-							local anim_name = data.content_.animation_.file_name_
-                            local pathf = tcpath..'/data/animation/'..anim_name
-							local cpath = tcpath..'/data/animation'
+						if data.content._ == 'messageAnimation' then
+							local anim_id = data.content.animation.animation.id
+							local anim_name = data.content.animation.file_name
+                            local pathf = tcpath..'/files/animations/'..anim_name
+							local cpath = tcpath..'/files/animations'
                             if file_exi(anim_name, cpath) then
                                 local pfile = folder
                                 os.rename(pathf, pfile)
                                 file_dl(anim_id)
-                                edit_msg(msg.to.id, msg.id_, '<b>Gif</b> <code>'..folder..'</code> <b>Has Been Saved.</b>', 'html')
+									edit_msg(msg.to.id, msg.id, '<b>Gif</b> <code>'..folder..'</code> <b>Has Been Saved.</b>', 'html')
                             else
-                                edit_msg(msg.to.id, msg.id_, '_This file does not exist. Send file again._', 'md')
+									edit_msg(msg.to.id, msg.id, '_This file does not exist. Send file again._', 'md')
                             end
 						end
                     else
                         return
                     end
                 end
-                tdcli_function ({ ID = 'GetMessage', chat_id_ = msg.chat_id_, message_id_ = data.id_ }, get_fileinfo, nil)
+                tdbot_function ({ _ = 'getMessage', chat_id = msg.chat_id, message_id = data.id }, get_fileinfo, nil)
             end
-	        tdcli_function ({ ID = 'GetMessage', chat_id_ = msg.chat_id_, message_id_ = msg.reply_to_message_id_ }, get_filemsg, nil)
+	        tdbot_function ({ _ = 'getMessage', chat_id = msg.chat_id, message_id = msg.reply_to_message_id }, get_filemsg, nil)
         end
     end
 
@@ -564,22 +640,22 @@ end
 end
 
 if matches[1] == 'setmyusername' and is_sudo(msg) then
-tdcli.changeUsername(matches[2], dl_cb, nil)
+tdbot.changeUsername(matches[2], dl_cb, nil)
 return edit_msg(msg.to.id, msg.id, '_Username Changed To:_ @'..matches[2], "md")
 end
 
 if matches[1] == 'delmyusername' and is_sudo(msg) then
-tdcli.changeUsername('', dl_cb, nil)
+tdbot.changeUsername('', dl_cb, nil)
 return edit_msg(msg.to.id, msg.id, '*Done!*', "md")
   end
 
 if matches[1] == 'setmyname' and is_sudo(msg) then
-tdcli.changeName(matches[2], dl_cb, nil)
+tdbot.changeName(matches[2], dl_cb, nil)
 return edit_msg(msg.to.id, msg.id, '_Name Changed To:_ *'..matches[2]..'*', "md")
 end
 
 if matches[1] == 'delmyname' and is_sudo(msg) then
-tdcli.changeName(' ', dl_cb, nil)
+tdbot.changeName(' ', dl_cb, nil)
 return edit_msg(msg.to.id, msg.id, '_Name Has Been Deleted_', "md")
 end
 
@@ -587,12 +663,12 @@ if matches[1] == 'addcontact' and is_sudo(msg) then
     local phone_number = matches[2]
     local first_name = matches[3]
     local last_name = matches[4]
-    tdcli.importContacts(phone_number, first_name, last_name, 0)
+    tdbot.importContacts(phone_number, first_name, last_name, 0)
     return edit_msg(msg.to.id, msg.id, '_User_ *[+'.. matches[2] ..']* _Has Been Added_', "md")
   end
 
 if matches[1] == 'delcontact' and is_sudo(msg) then
-    tdcli.deleteContacts({
+    tdbot.deleteContacts({
       [0] = tonumber(matches[2])
     })
     return edit_msg(msg.to.id, msg.id, '_User_ *['.. matches[2] ..']* _Removed From Contact List_', "md")
@@ -600,11 +676,11 @@ if matches[1] == 'delcontact' and is_sudo(msg) then
 
     if matches[1] == 'left' and is_sudo(msg) then
     edit_msg(msg.to.id, msg.id, "*Bye All :D*", "md")
-  tdcli.changeChatMemberStatus(chat, our_id, 'Left', dl_cb, nil)
+  tdbot.changeChatMemberStatus(chat, our_id, 'Left', dl_cb, nil)
    end
 
     if matches[1] == 'selfbot' then
-    return tdcli.sendMessage(msg.to.id, msg.id, 1, _config.info_text, 1, 'html')
+    return tdbot.sendMessage(msg.to.id, msg.id, 1, _config.info_text, 1, 'html')
    end
 
     if matches[1] == 'sudolist' and is_sudo(msg) then
@@ -656,6 +732,7 @@ patterns = {
 "^[!/#](selfbot)$",
 "^[!/#](clear cache)$",
 "^[!/#](left)$",
+"^[!/#](helptools)$",
 "^[!/#](block)$",
 "^[!/#](block)$",
 "^[!/#](unblock)$",

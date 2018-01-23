@@ -168,7 +168,7 @@ _Get weather_
 _You can use_ *[!/#]* _at the beginning of commands._
 
 *Good luck ;)*]]
-tdcli.sendMessage(msg.from.id, 0, 1, text, 1, 'md')
+tdbot.sendMessage(msg.from.id, 0, 1, text, 1, 'md')
         return edit_msg(msg.to.id, msg.id, "_Fun help was send in your private message_", "md")
     end
 	if matches[1]:lower() == "calc" and matches[2] and is_sudo(msg) then 
@@ -203,61 +203,53 @@ tdcli.sendMessage(msg.from.id, 0, 1, text, 1, 'md')
 	if matches[1]:lower() == 'tophoto' and is_sudo(msg) and msg.reply_id then
 		function tophoto(arg, data)
 			function tophoto_cb(arg,data)
-				if data.content_.sticker_ then
-					local file = data.content_.sticker_.sticker_.path_
-					local secp = tostring(tcpath)..'/data/sticker/'
+				if data.content.sticker then
+					local file = data.content.sticker.sticker.path
+					local secp = tostring(tcpath)..'/data/stickers/'
 					local ffile = string.gsub(file, '-', '')
 					local fsecp = string.gsub(secp, '-', '')
 					local name = string.gsub(ffile, fsecp, '')
 					local sname = string.gsub(name, 'webp', 'jpg')
 					local pfile = 'data/photos/'..sname
 					local pasvand = 'webp'
-					local apath = tostring(tcpath)..'/data/sticker'
-					if file_exi(tostring(name), tostring(apath), tostring(pasvand)) then
+					local apath = tostring(tcpath)..'/data/stickers'
+					if file_exi(tostring(name), tostring(apath), '') then
 						os.rename(file, pfile)
-   if msg.to.type == "channel" then
     del_msg(msg.to.id, msg.id)
-       else
-     edit_msg(msg.to.id, msg.id, "😐", "md")
-   end
-						tdcli.sendPhoto(msg.to.id, 0, 0, 1, nil, pfile, "@BeyondTeam", dl_cb, nil)
+						        tdbot.sendPhoto(msg.to.id, msg.id, pfile, 0, {}, 0, 0, "@BeyondTeam", 0, 0, 1, nil, dl_cb, nil)
 					else
-         edit_msg(msg.to.id, msg.id, '_This sticker does not exist. Send sticker again._', "md")
+						edit_msg(msg.to.id, msg.id, '_This sticker does not exist. Send sticker again._', 'md')
 					end
 				else
-         edit_msg(msg.to.id, msg.id, '_This is not a sticker._', "md")
+					edit_msg(msg.to.id, msg.id, '_This is not a sticker._', 'md')
 				end
 			end
-            tdcli_function ({ ID = 'GetMessage', chat_id_ = msg.chat_id_, message_id_ = data.id_ }, tophoto_cb, nil)
+            tdbot_function ({ _ = 'getMessage', chat_id = msg.chat_id, message_id = data.id }, tophoto_cb, nil)
 		end
-		tdcli_function ({ ID = 'GetMessage', chat_id_ = msg.chat_id_, message_id_ = msg.reply_id }, tophoto, nil)
+		tdbot_function ({ _ = 'getMessage', chat_id = msg.chat_id, message_id = msg.reply_id }, tophoto, nil)
     end
 --------------------------------
 	if matches[1]:lower() == 'tosticker' and is_sudo(msg) and msg.reply_id then
 		function tosticker(arg, data)
 			function tosticker_cb(arg,data)
-				if data.content_.ID == 'MessagePhoto' then
-					file = data.content_.photo_.id_
-					local pathf = tcpath..'/data/photo/'..file..'_(1).jpg'
+				if data.content._ == 'messagePhoto' then
+					file = data.content.photo.id
+					local pathf = tcpath..'/files/photos/'..file..'.jpg'
 					local pfile = 'data/photos/'..file..'.webp'
-					if file_exi(file..'_(1).jpg', tcpath..'/data/photo', 'jpg') then
+					if file_exi(file..'.jpg', tcpath..'/files/photos', 'jpg') then
 						os.rename(pathf, pfile)
-   if msg.to.type == "channel" then
     del_msg(msg.to.id, msg.id)
-       else
-     edit_msg(msg.to.id, msg.id, "😐", "md")
-   end
-						tdcli.sendDocument(msg.chat_id_, 0, 0, 1, nil, pfile, '@BeyondTeam', dl_cb, nil)
+tdbot.sendDocument(msg.to.id, pfile, "@BeyondTeam", nil, msg.id, 0, 1, nil, dl_cb, nil)
 					else
-         edit_msg(msg.to.id, msg.id, '_This photo does not exist. Send sticker again._', "md")
+						edit_msg(msg.to.id, msg.id, '_This photo does not exist. Send photo again._', 'md')
 					end
 				else
-         edit_msg(msg.to.id, msg.id, '_This is not a photo._', "md")
+					edit_msg(msg.to.id, msg.id, '_This is not a photo._', 'md')
 				end
 			end
-			tdcli_function ({ ID = 'GetMessage', chat_id_ = msg.chat_id_, message_id_ = data.id_ }, tosticker_cb, nil)
+			tdbot_function ({ _ = 'getMessage', chat_id = msg.chat_id, message_id = data.id }, tosticker_cb, nil)
 		end
-		tdcli_function ({ ID = 'GetMessage', chat_id_ = msg.chat_id_, message_id_ = msg.reply_id }, tosticker, nil)
+		tdbot_function ({ _ = 'getMessage', chat_id = msg.chat_id, message_id = msg.reply_id }, tosticker, nil)
     end
 --------------------------------
 	if matches[1]:lower() == 'weather' and is_sudo(msg) then
@@ -279,12 +271,8 @@ tdcli.sendMessage(msg.from.id, 0, 1, text, 1, 'md')
 		local jdat = json:decode(url)
 		local url = 'http://latex.codecogs.com/png.download?'..'\\dpi{600}%20\\huge%20\\'..fonts[math.random(#fonts)]..'{{\\color{'..colors[math.random(#colors)]..'}'..jdat.ENtime..'}}'
 		local file = download_to_file(url,'time.webp')
-   if msg.to.type == "channel" then
     del_msg(msg.to.id, msg.id)
-       else
-     edit_msg(msg.to.id, msg.id, "😐", "md")
-   end
-		tdcli.sendDocument(msg.to.id, 0, 0, 1, nil, file, '', dl_cb, nil)
+tdbot.sendDocument(msg.to.id, file, "@BeyondTeam", nil, msg.id, 0, 1, nil, dl_cb, nil)
 
 	end
 --------------------------------
@@ -297,12 +285,8 @@ if matches[1] == 'voice' and is_sudo(msg) then
       else
   local url = "http://tts.baidu.com/text2audio?lan=en&ie=UTF-8&text="..textc
   local file = download_to_file(url,'Self-BotV2.mp3')
-   if msg.to.type == "channel" then
-    del_msg(msg.to.id, msg.id)
-       else
-     edit_msg(msg.to.id, msg.id, "😐", "md")
-   end
- 				tdcli.sendDocument(msg.to.id, 0, 0, 1, nil, file, '@BeyondTeam', dl_cb, nil)
+     del_msg(msg.to.id, msg.id)
+ 				tdbot.sendDocument(msg.to.id, file, "@BeyondTeam", nil, msg.id, 0, 1, nil, dl_cb, nil)
    end
 end
 
@@ -349,12 +333,8 @@ end
 		local url = "https://assets.imgix.net/examples/clouds.jpg?blur=150&w="..w.."&h="..h.."&fit=crop&txt="..eq.."&txtsize="..txtsize.."&txtclr="..txtclr.."&txtalign=middle,center&txtfont=Futura%20Condensed%20Medium&mono=ff6598cc"
 		local receiver = msg.to.id
 		local  file = download_to_file(url,'text.webp')
-   if msg.to.type == "channel" then
     del_msg(msg.to.id, msg.id)
-       else
-     edit_msg(msg.to.id, msg.id, "😐", "md")
-   end
-		tdcli.sendDocument(msg.to.id, 0, 0, 1, nil, file, '', dl_cb, nil)
+		tdbot.sendDocument(msg.to.id, file, "@BeyondTeam", nil, msg.id, 0, 1, nil, dl_cb, nil)
 	end
 --------------------------------
 	if matches[1]:lower() == "photo" and is_sudo(msg) then 
@@ -376,12 +356,8 @@ end
 		local url = "https://assets.imgix.net/examples/clouds.jpg?blur=150&w="..w.."&h="..h.."&fit=crop&txt="..eq.."&txtsize="..txtsize.."&txtclr="..txtclr.."&txtalign=middle,center&txtfont=Futura%20Condensed%20Medium&mono=ff6598cc"
 		local receiver = msg.to.id
 		local  file = download_to_file(url,'text.jpg')
-   if msg.to.type == "channel" then
     del_msg(msg.to.id, msg.id)
-       else
-     edit_msg(msg.to.id, msg.id, "😐", "md")
-   end
-		tdcli.sendPhoto(msg.to.id, 0, 0, 1, nil, file, "@BeyondTeam", dl_cb, nil)
+tdbot.sendPhoto(msg.to.id, msg.id, file, 0, {}, 0, 0, "@BeyondTeam", 0, 0, 1, nil, dl_cb, nil)
 	end
 end
 end
