@@ -7,7 +7,7 @@
 
 ## Commands
 
-| Use help |
+| Command | Description |
 |--------|------------|
 | [#!/]help | just send help in your group and get the commands |
 
