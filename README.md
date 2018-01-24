@@ -7,8 +7,8 @@ Professional Self-Bot Based On NEW TG-CLI
 
 ## Commands
 
-| Use help |
-|:--------|:------------|
+| Command | Description |
+|--------|------------|
 | [#!/]help | just send help in your group and get the commands |
 
 **You can use "#", "!", or "/" to begin all commands
